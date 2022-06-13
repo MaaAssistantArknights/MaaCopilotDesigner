@@ -1,0 +1,97 @@
+<form class="form" (submit)="save()">
+
+
+    <div class="row" style="font-size: 12px">
+        <div class="col-3">
+            <mat-form-field appearance="outline">
+                <mat-label>类别</mat-label>
+                <mat-select [(ngModel)]="action.type" [ngModelOptions]="{standalone: true}">
+                    <mat-option value="二倍速">二倍速</mat-option>
+                    <mat-option value="部署">部署</mat-option>
+                    <mat-option value="技能">技能</mat-option>
+                    <mat-option value="撤退">撤退</mat-option>
+                    <mat-option value="子弹时间">子弹时间</mat-option>
+                    <mat-option value="技能用法">技能用法</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col-3">
+            <mat-form-field appearance="outline">
+                <mat-label>击杀数</mat-label>
+                <input type="number" matInput [(ngModel)]="action.kills" [ngModelOptions]="{standalone: true}">
+            </mat-form-field>
+        </div>
+        <div class="col-3">
+            <mat-form-field appearance="outline">
+                <mat-label>费用变化</mat-label>
+                <input type="number" matInput [(ngModel)]="action.cost_change" [ngModelOptions]="{standalone: true}">
+            </mat-form-field>
+        </div>
+        <div class="col-3">
+            <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>干员名字</mat-label>
+                <input type="text" placeholder="请输入" aria-label="干员名字" matInput [matAutocomplete]="auto"
+                    [formControl]="myControl" required="true">
+                <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                        {{option}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row" style="font-size: 12px">
+        <div class="col-3">
+            <mat-form-field appearance="outline">
+                <mat-label>x坐标</mat-label>
+                <input type="number" matInput [(ngModel)]="action.location[0]" [ngModelOptions]="{standalone: true}">
+            </mat-form-field>
+        </div>
+        <div class="col-3">
+            <mat-form-field appearance="outline">
+                <mat-label>y坐标</mat-label>
+                <input type="number" matInput [(ngModel)]="action.location[1]" [ngModelOptions]="{standalone: true}">
+            </mat-form-field>
+        </div>
+        <div class="col-3">
+            <mat-form-field appearance="outline">
+                <mat-label>方向</mat-label>
+                <mat-select [(ngModel)]="action.direction" [ngModelOptions]="{standalone: true}">
+                    <mat-option value=""></mat-option>
+                    <mat-option value="上">上</mat-option>
+                    <mat-option value="下">下</mat-option>
+                    <mat-option value="左">左</mat-option>
+                    <mat-option value="右">右</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col-3">
+            <mat-form-field appearance="outline">
+                <mat-label>文本颜色</mat-label>
+                <input type="text" matInput [(ngModel)]="action.doc_color" [ngModelOptions]="{standalone: true}">
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row" style="font-size: 12px">
+        <div class="col-3">
+            <mat-form-field appearance="outline">
+                <mat-label>前延迟(毫秒)</mat-label>
+                <input type="number" matInput [(ngModel)]="action.pre_delay" [ngModelOptions]="{standalone: true}">
+            </mat-form-field>
+        </div>
+        <div class="col-3">
+            <mat-form-field appearance="outline">
+                <mat-label>后延迟（毫秒）</mat-label>
+                <input type="number" matInput [(ngModel)]="action.rear_delay" [ngModelOptions]="{standalone: true}">
+            </mat-form-field>
+        </div>
+        <div class="col-6">
+            <mat-form-field appearance="outline">
+                <mat-label>文本</mat-label>
+                <input type="text" matInput [(ngModel)]="action.doc" [ngModelOptions]="{standalone: true}">
+            </mat-form-field>
+        </div>
+    </div>
+    <button *ngIf="index>=0" type="submit" id="updateActionButton" class="btn btn-primary">更新</button>
+    <button *ngIf="index<0" type="submit" id="updateActionButton" class="btn btn-primary">新增</button>
+</form>

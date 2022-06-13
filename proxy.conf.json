@@ -1,0 +1,11 @@
+{
+  "/copilotapi/*": {
+    "target": "http://localhost:5259",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/copilotapi": ""
+    }
+  }
+}

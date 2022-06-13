@@ -1,0 +1,36 @@
+<form class="form" (submit)="save()">
+
+    <div class="row" style="font-size: 12px">
+        <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>干员名字</mat-label>
+            <input type="text" placeholder="请输入" aria-label="干员名字" matInput [matAutocomplete]="auto"
+                [formControl]="myControl" required="true">
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </div>
+    <div class="row" style="font-size: 12px">
+        <div class="col-6">
+            <mat-form-field appearance="outline">
+                <mat-label>技能</mat-label>
+                <input type="number" max="3" min="1" matInput [(ngModel)]="operator.skill"
+                    [ngModelOptions]="{standalone: true}">
+            </mat-form-field>
+        </div>
+        <div class="col-6">
+            <mat-form-field appearance="outline">
+                <mat-label>技能用法</mat-label>
+                <mat-select [(ngModel)]="operator.skill_usage" [ngModelOptions]="{standalone: true}">
+                    <mat-option value=0>不自动使用</mat-option>
+                    <mat-option value=1>好了就用，有多少次用多少次</mat-option>
+                    <mat-option value=2>好了就用，仅使用一次</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <button *ngIf="index>=0" type="submit" id="updateActionButton" class="btn btn-primary">更新</button>
+    <button *ngIf="index<0" type="submit" id="updateActionButton" class="btn btn-primary">新增</button>
+</form>
