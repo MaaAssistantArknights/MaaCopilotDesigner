@@ -1,8 +1,6 @@
 import { Component, Inject, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -13,22 +11,35 @@ import { ToastrService } from 'ngx-toastr';
 
 export class LoginComponent {
   form: FormGroup;
+  public role: string = '';
 
   constructor(private fb: FormBuilder,
     public dialogRef: MatDialogRef<LoginComponent>,
     public messageService: ToastrService,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
 
-    this.form = this.fb.group({
-      email: ['', Validators.email],
-      password: ['', Validators.required]
-    });
+    @Inject(MAT_DIALOG_DATA) public data: any) {    
+    if (data && data.role) {
+      this.role = data.role;
+      this.form = this.fb.group({
+        email: ['', Validators.email],
+        password: ['', Validators.required],
+        role: ['', Validators.required],
+        user_name: ['', Validators.required]
+      });
+    } else {
+      this.role = '';
+      this.form = this.fb.group({
+        email: ['', Validators.email],
+        password: ['', Validators.required]
+      });
+    }
+
   }
-  login(){    
-    if(this.form.invalid){
+  login() {
+    if (this.form.invalid) {
       this.messageService.error("邮件格式错误")
     }
-    else{
+    else {
       this.dialogRef.close(this.form.value);
     }
 

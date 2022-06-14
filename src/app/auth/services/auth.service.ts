@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment'
 
 import * as moment from "moment";
+import { ServerResponseModel } from 'src/app/copilot/models/service-response-model';
 
 @Injectable()
 export class AuthService {
@@ -36,9 +37,13 @@ export class AuthService {
     localStorage.removeItem("username");
     localStorage.removeItem("role");
   }
-
+  changePassword(original_password: string, new_password: string) {
+    return this.http.post<ServerResponseModel>(environment.baseurl + '/user/update/password', { original_password, new_password }, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem("id_token") as string } })
+  }
+  createUser(object :any) {
+    return this.http.post<ServerResponseModel>(environment.baseurl + '/user/create', object, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem("id_token") as string } })
+  }
   public isLoggedIn() {
-    console.log(moment().isBefore(this.getExpiration()))
     return moment().isBefore(this.getExpiration()) && localStorage.getItem("username");
   }
 
@@ -49,7 +54,6 @@ export class AuthService {
   getExpiration() {
     const expiration = localStorage.getItem("expires_at") as string;
     const expiresAt = JSON.parse(expiration);
-    console.log(moment(expiresAt));
     return moment(expiresAt)
   }
   isRole(permission: string) {

@@ -1,0 +1,23 @@
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <div class="row">
+            <mat-form-field appearance="outline">
+                <mat-label>老密码</mat-label>
+                <input name="original_password" formControlName="original_password" matInput placeholder="请输入老密码">
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <mat-form-field appearance="outline">
+                <mat-label>新密码</mat-label>
+                <input type="new_password" name="new_password" formControlName="new_password" matInput
+                    placeholder="请输入新密码">
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <div class="form-buttons">
+                <button class="btn btn-primary" (click)="login()">修改密码</button>
+            </div>
+        </div>
+    </form>
+
+</div>

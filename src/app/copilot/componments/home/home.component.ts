@@ -18,6 +18,7 @@ import { ActionType, EditMode } from 'src/app/shared/models/actionType';
 import { CopilotDetailComponent } from '../copilot-detail/copilot-detail.component';
 import { SearchModel } from '../../models/search-model';
 import { LoginComponent } from 'src/app/auth/componments/login/login.component';
+import { ChangePassComponent } from 'src/app/auth/componments/change-pass/change-pass.component';
 
 declare var SearchServer: any;
 
@@ -39,9 +40,9 @@ export class HomeComponent implements OnInit {
   public operatorEditIndex = -1
   public actionEditIndex = -1
   public isLogin: any;
+  public role: string = '';
 
-  @ViewChild('searchGrid', { read: ElementRef }) mySearchGrid: ElementRef | undefined;
-  // public itemsPerPage = 10;
+  @ViewChild('searchGrid', { read: ElementRef }) mySearchGrid: ElementRef | undefined;  
   gridApi: any;
   gridColumnApi: any;
   public rowData!: any;
@@ -57,7 +58,11 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.isLogin = this.authService.isLoggedIn();
     this.rowData = { data: [], page: 1, total: 0 };
+    this.role = this.authService.getRole();
     this.initializedGrid();
+  }
+  AfterViewInit(): void {
+    this.role = this.authService.getRole();
   }
   handelOperatorAction(event: any) {
     if (event == ActionType[1]) {
@@ -80,8 +85,7 @@ export class HomeComponent implements OnInit {
         componmentParent: this,
         gridDiv: this.mySearchGrid?.nativeElement
       },
-      paginationPageSize: this.pageSize,
-      // onCellClicked: this.onCellClicked.bind(this)
+      paginationPageSize: this.pageSize      
     }
   }
   onGridReady(params: any) {
@@ -95,6 +99,21 @@ export class HomeComponent implements OnInit {
 
     this.search();
   }
+  changepass() {
+    const dialogRef = this.dialog.open(ChangePassComponent, {
+      data: {},
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.authService.changePassword(result.original_password, result.new_password).subscribe(res => {
+          if (res.status_code == 200) {
+            this.messageService.success("密码修改成功")
+          }
+          else this.messageService.error(`${res.message}`)
+        })
+      }
+    });
+  }
   login() {
     const dialogRef = this.dialog.open(LoginComponent, {
       data: {},
@@ -107,6 +126,21 @@ export class HomeComponent implements OnInit {
             this.isLogin = true;
           }
           else this.messageService.error(`登录失败：${res.message}`)
+        })
+      }
+    });
+  }
+  createUser() {
+    const dialogRef = this.dialog.open(LoginComponent, {
+      data: { role: this.role },
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.authService.createUser(result).subscribe(res => {
+          if (res.status_code == 200) {
+            this.messageService.success("新建用户成功")
+          }
+          else this.messageService.error(`新建失败${res.message}`)
         })
       }
     });
@@ -127,6 +161,7 @@ export class HomeComponent implements OnInit {
             data: { homework: JSON.parse(res.data.content), role: this.authService.getRole(), id: data.id },
           });
           dialogRef.afterClosed().subscribe(result => {
+            this.search();
           });
         } else {
           this.messageService.error("数据读取失败")
@@ -140,6 +175,7 @@ export class HomeComponent implements OnInit {
         data: { homework: new CopilotModel(), role: this.authService.getRole() },
       });
       dialogRef.afterClosed().subscribe(result => {
+        this.search();
       });
     }
   }

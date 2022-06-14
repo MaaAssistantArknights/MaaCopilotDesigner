@@ -106,6 +106,7 @@ export class CopilotDetailComponent {
     fileReader.readAsText(file);
   }
   download() {
+    this.homework.minimum_required = "v4.0";
     var jsonString = JSON.stringify(this.homework);
     var jsonPretty = JSON.stringify(JSON.parse(jsonString), null, 4);
     var file = new Blob([jsonPretty], { type: 'text/plain' });
@@ -119,6 +120,7 @@ export class CopilotDetailComponent {
   }
   upload() {
     if (this.userRole && this.userRole != "User") {
+      this.homework.minimum_required = "v4.0";
       if (this.id && this.id > 0) {
         this.service.upload(JSON.stringify(this.homework)).subscribe(res => {
           if (res.data && res.status_code == 200) {

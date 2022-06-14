@@ -16,6 +16,7 @@ import { LoginComponent } from './auth/componments/login/login.component';
 import { AuthService } from './auth/services/auth.service';
 import { ToastrModule } from 'ngx-toastr';
 import { SearchGridService } from './copilot/services/search-grid.service';
+import { ChangePassComponent } from './auth/componments/change-pass/change-pass.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { SearchGridService } from './copilot/services/search-grid.service';
     SearchCopilotComponent,
     HomeComponent,
     CopilotDetailComponent,
-    LoginComponent
+    LoginComponent,
+    ChangePassComponent
   ],
   imports: [
     BrowserModule,
