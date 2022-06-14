@@ -18,11 +18,12 @@
 
 [网址](https://www.prts.plus/maacopilotdesigner)
 
-## 致谢 
 
-（自己感谢自己
+### 贡献/参与者
 
-感谢后端大佬支持
+感谢所有参与到开发/测试中的朋友们，是大家的帮助让 Copliot System 越来越好！ (*´▽｀)ノノ 
+
+[![Contributors](https://contributors-img.web.app/image?repo=MaaAssistantArknights/MaaCopilotDesigner)](https://github.com/MaaAssistantArknights/MaaCopilotDesigner/graphs/contributors)
 
 ### npm包及开源库
 
