@@ -7,6 +7,7 @@
 * 服务器端，再也不要QQ群分享了，好耶
 * 朴素 （能用就行.jpg
 * 可以搜索已有库，并直接下载（方便
+* 通过[AG Grid Community](https://www.npmjs.com/package/ag-grid-community) 可是实现对搜索结果的 Client Side Filtering
 * 分配各种用户权限实现不同功能
 * 可以查看下载数量 （后续添加点赞功能
 
