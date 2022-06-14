@@ -20,9 +20,9 @@ export class CopilotService {
   }
 
   search(path: string): Observable<any> {
-    return this.http.get<ServerResponseModel>(environment.baseurl + 'copilot/query' + path)
+    return this.http.get<ServerResponseModel>(environment.baseurl + '/copilot/query' + path)
   }
   getByID(id: string): Observable<any> {
-    return this.http.get<ServerResponseModel>(environment.baseurl + 'copilot/get/' + id)
+    return this.http.get<ServerResponseModel>(environment.baseurl + '/copilot/get/' + id)
   }
 }
