@@ -1,27 +1,53 @@
 # MaaCopilotDesigner
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.7.
+![platform](https://img.shields.io/badge/platform-Angular-blueviolet) ![license](https://img.shields.io/github/license/MaaAssistantArknights/MeoAsstElectronUI) ![commit](https://img.shields.io/github/commit-activity/m/MaaAssistantArknights/MaaCopilotDesigner?color=%23ff69b4)
 
-## Development server
+## UI特点
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+* 服务器端，再也不要QQ群分享了，好耶
+* 朴素 （能用就行.jpg
+* 可以搜索已有库，并直接下载（方便
+* 分配各种用户权限实现不同功能
+* 可以查看下载数量 （后续添加点赞功能
 
-## Code scaffolding
+## 截图
+![image](https://user-images.githubusercontent.com/33809511/173706025-05f4b68d-2cd7-4f36-9f9b-9fb4665ecaf4.png)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+## 链接
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+[网址](https://www.prts.plus/maacopilotdesigner)
 
-## Running unit tests
+## 致谢 
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+（自己感谢自己
 
-## Running end-to-end tests
+感谢后端大佬支持
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### npm包及开源库
 
-## Further help
+* [Angular Material UI](https://material.angular.io/)
+* [AG Grid](https://www.ag-grid.com/)
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## 开发相关
+
+### 调试（以VS Code为例）
+
+* 依赖安装
+  1. 打开终端输入`npm istall
+  2. 开启后端 ->>[MaaCopilotServer](https://github.com/MaaAssistantArknights/MaaCopilotServer)
+
+* 调试:
+  1. 打开终端输入`npm run start` 
+
+* unit tests
+
+  1. Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).(我不会
+
+* end-to-end tests
+
+  1. Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities. (还是不会
+
+
+* 生产:
+  1. 打开终端输入`ng build` Build结果会保存在 `dist/` 目录
