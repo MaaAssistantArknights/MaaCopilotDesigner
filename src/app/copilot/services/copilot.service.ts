@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as moment from "moment";
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment'
 import { CopilotModel } from '../models/copilot-model';
 import { ServerResponseModel } from '../models/service-response-model';
@@ -12,9 +13,16 @@ export class CopilotService {
 
   constructor(private http: HttpClient) { }
   upload(data: any) {
-    return this.http.post<ServerResponseModel>(environment.baseurl + '/copilot/upload', {Content:data}, this.setHeader())
+    return this.http.post<ServerResponseModel>(environment.baseurl + '/copilot/upload', { Content: data }, this.setHeader())
   }
   setHeader() {
     return { headers: { 'Authorization': 'Bearer ' + localStorage.getItem("id_token") as string } };
+  }
+
+  search(path: string): Observable<any> {
+    return this.http.get<ServerResponseModel>(environment.baseurl + 'copilot/query' + path)
+  }
+  getByID(id: string): Observable<any> {
+    return this.http.get<ServerResponseModel>(environment.baseurl + 'copilot/get/' + id)
   }
 }

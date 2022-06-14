@@ -1,18 +1,38 @@
-<form [formGroup]="form">
-    <fieldset>
-        <legend>Login</legend>
-        <div class="form-field">
-            <label>Email:</label>
-            <input name="email" formControlName="email">
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <div class="row">
+
+            <mat-form-field appearance="outline">
+                <mat-label>用户名</mat-label>
+                <input name="email" formControlName="email" matInput placeholder="请输入邮件">
+            </mat-form-field>
+
         </div>
-        <div class="form-field">
-            <label>Password:</label>
-            <input name="password" formControlName="password" 
-                   type="password">
+        <div class="row">
+            <mat-form-field appearance="outline">
+                <mat-label>密码</mat-label>
+                <input type="password" name="password" formControlName="password" matInput placeholder="请输入密码">
+            </mat-form-field>
+
         </div>
-    </fieldset>
-    <div class="form-buttons">
-        <button class="button button-primary" 
-                (click)="login()">Login</button>
-    </div>
-</form>
+        <!-- <fieldset>
+            <legend>Login</legend>
+            <div class="form-field">
+                <label>Email:</label>
+                <input name="email" formControlName="email">
+            </div>
+            <div class="form-field">
+                <label>Password:</label>
+                <input name="password" formControlName="password" type="password">
+            </div>
+        </fieldset> -->
+        <div class="row">
+            <div class="form-buttons">
+                <button class="btn btn-primary" (click)="login()">登录</button>
+            </div>
+        </div>
+
+
+    </form>
+
+</div>

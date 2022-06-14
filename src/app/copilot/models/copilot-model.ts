@@ -11,5 +11,6 @@ export class CopilotModel {
     constructor() {
         this.opers = [];
         this.actions = [];
+        this.doc = new DescriptionModel();
     }
 }

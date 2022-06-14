@@ -15,6 +15,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './auth/componments/login/login.component';
 import { AuthService } from './auth/services/auth.service';
 import { ToastrModule } from 'ngx-toastr';
+import { SearchGridService } from './copilot/services/search-grid.service';
 
 
 @NgModule({
@@ -35,7 +36,7 @@ import { ToastrModule } from 'ngx-toastr';
     ReactiveFormsModule,
     ToastrModule.forRoot()
   ],
-  providers: [AuthService],
+  providers: [AuthService,SearchGridService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

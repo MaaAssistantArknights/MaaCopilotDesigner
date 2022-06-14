@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -13,24 +15,23 @@ export class LoginComponent {
   form: FormGroup;
 
   constructor(private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router) {
+    public dialogRef: MatDialogRef<LoginComponent>,
+    public messageService: ToastrService,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
 
     this.form = this.fb.group({
-      email: ['', Validators.required],
+      email: ['', Validators.email],
       password: ['', Validators.required]
     });
   }
-
-  login() {
-    const val = this.form.value;
-
-    if (val.email && val.password) {
-      this.authService.login(val.email, val.password).finally(() => {
-        this.router.navigateByUrl('/home');
-      })
-
-
+  login(){    
+    if(this.form.invalid){
+      this.messageService.error("邮件格式错误")
     }
+    else{
+      this.dialogRef.close(this.form.value);
+    }
+
   }
+
 }

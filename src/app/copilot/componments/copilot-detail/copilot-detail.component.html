@@ -1,32 +1,157 @@
-<div class="container" style="font-size: 18px">
-    <div class="row">
-      <div class="col-3">
-        <mat-form-field appearance="outline">
-          <mat-label>关卡名</mat-label>
-          <input matInput placeholder="请输入关卡名">
-        </mat-form-field>
-      </div>
-      <div class="col-4">
-        <mat-form-field appearance="outline">
-          <mat-label>标题</mat-label>
-          <textarea matInput placeholder="Placeholder"></textarea>
-        </mat-form-field>
-      </div>
-      <div class="col-4">
-        <mat-form-field appearance="outline">
-          <mat-label>作业介绍</mat-label>
-          <textarea matInput placeholder="Placeholder"></textarea>
-        </mat-form-field>
-      </div>
-  
+<div mat-dialog-content>
+  <br />
+  <div class="row">
+
+    <div class="col-2">
+      <button class="btn btn-primary" (click)="upload()">{{(id>0?"更新至服务器":"上传至服务器")}}</button>
+
     </div>
-    <div class="row">
-      <div class="col-4">
-        operator
+    <div class="col-2">
+      <button class="btn btn-danger" (click)="clear()">清除数据</button>
+    </div>
+    <div class="col-4"></div>
+    <input type="file" id="selectedFile" #selectedFile (change)="onFileChange($event)" style="display: none;"
+      name="files[]" size=1 />
+    <div class="col-2">
+      <button class="btn btn-dark" (click)="selectedFile.click()">上载JSON</button>
+    </div>
+    <div class="col-2">
+      <button class="btn btn-dark" (click)="download()">下载JSON</button>
+    </div>
+
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-4">
+      <mat-form-field appearance="outline">
+        <mat-label>关卡名</mat-label>
+        <input matInput placeholder="请输入关卡名" [(ngModel)]="homework.stage_name">
+      </mat-form-field>
+    </div>
+    <div class="col-4">
+      <mat-form-field appearance="outline">
+        <mat-label>标题</mat-label>
+        <textarea matInput placeholder="Placeholder" [(ngModel)]="homework.doc.title"></textarea>
+      </mat-form-field>
+    </div>
+    <div class="col-4">
+      <mat-form-field appearance="outline">
+        <mat-label>作业介绍</mat-label>
+        <textarea matInput placeholder="Placeholder" [(ngModel)]="homework.doc.details"></textarea>
+      </mat-form-field>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <!-- <mat-radio-group [(ngModel)]="currentEdit">
+        <mat-radio-button value="1">修改干员</mat-radio-button>
+        <mat-radio-button value="2">修改群组</mat-radio-button>
+      </mat-radio-group> -->
+      <div *ngIf="currentEdit==1">
+        <table class="operatorTable" style="width: 100%;">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">修改</th>
+              <th scope="col">干员名字</th>
+              <th scope="col">技能</th>
+              <th scope="col">技能用法</th>
+              <th scope="col">删除</th>
+            </tr>
+          </thead>
+          <tbody cdkDropList (cdkDropListDropped)="onDrop('operator',$event)">
+            <tr *ngFor="let user of homework.opers;let i = index" cdkDrag cdkDragLockAxis="y">
+              <th class="col-xs">
+                <div class="drag-handle">
+                  <ng-container [ngTemplateOutlet]="dragHandleTmpl">
+                  </ng-container>
+                </div>
+              </th>
+              <td class="col-md"><button type='button' (click)="itemEdit('operator',i)" class='btn btn-default'><span
+                    class="material-symbols-outlined">
+                    edit
+                  </span></button></td>
+              <td class="col-md">
+                {{ user.name }}</td>
+              <td class="col-md">{{ user.skill }}
+              </td>
+              <td class="col-md">
+                {{ user.skill_usage }}</td>
+              <td class="col-md"><button type='button' (click)="itemDelete('operator',i)" class='btn btn-default'><span
+                    class="material-symbols-outlined">
+                    delete
+                  </span></button></td>
+            </tr>
+          </tbody>
+        </table>
+        <operator [operator]="currentOperator" [index]="operatorEditIndex" (OnSaveClick)="itemSave($event,'operator')">
+        </operator>
       </div>
-      <div class="col-8">
-        <app-action></app-action>
-      </div>
-  
+      <!-- <div *ngIf="currentEdit==2">修改群组</div> -->
+    </div>
+    <div class="col-8">
+      <table class="actionTable" style="width: 100%;">
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">修改</th>
+            <th scope="col">类别</th>
+            <th scope="col">Kills</th>
+            <th scope="col">费用变化</th>
+            <th scope="col">干员名字</th>
+            <th scope="col">x坐标</th>
+            <th scope="col">y坐标</th>
+            <th scope="col">方向</th>
+            <th scope="col">前延迟</th>
+            <th scope="col">后延迟</th>
+            <th scope="col">文本</th>
+            <th scope="col">颜色</th>
+            <th scope="col">删除</th>
+          </tr>
+        </thead>
+        <tbody cdkDropList (cdkDropListDropped)="onDrop('action',$event)">
+          <tr *ngFor="let action of homework.actions;let i = index" cdkDrag cdkDragLockAxis="y">
+            <th class="col-xs">
+              <div class="drag-handle">
+                <ng-container [ngTemplateOutlet]="dragHandleTmpl">
+                </ng-container>
+
+              </div>
+            </th>
+            <td class="col-md"><button type='button' (click)="itemEdit('action',i)" class='btn btn-default'><span
+                  class="material-symbols-outlined">
+                  edit
+                </span></button></td>
+            <td class="col-md"> {{ action.type}}</td>
+            <td class="col-md"> {{ action.kills}}</td>
+            <td class="col-md"> {{ action.cost_change}}</td>
+            <td class="col-md"> {{ action.name}}</td>
+            <td class="col-md"> {{ action.location[0]}}</td>
+            <td class="col-md"> {{ action.location[1]}}</td>
+            <td class="col-md"> {{ action.direction}}</td>
+            <td class="col-md"> {{ action.pre_delay}}</td>
+            <td class="col-md"> {{ action.rear_delay}}</td>
+            <td class="col-md"> {{ action.doc}}</td>
+            <td class="col-md"> {{ action.doc_color}}</td>
+            <td class="col-md"><button type='button' (click)="itemDelete('action',i)" class='btn btn-default'><span
+                  class="material-symbols-outlined">
+                  delete
+                </span></button></td>
+          </tr>
+        </tbody>
+      </table>
+      <app-action [action]="currentAction" [index]="actionEditIndex" (OnSaveClick)="itemSave($event,'action')">
+      </app-action>
     </div>
   </div>
+</div>
+
+<ng-template #dragHandleTmpl>
+  <svg class="bi bi-list handle" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd"
+      d="M2.5 11.5A.5.5 0 013 11h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5zm0-4A.5.5 0 013 7h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5zm0-4A.5.5 0 013 3h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5z"
+      clip-rule="evenodd" />
+  </svg>
+</ng-template>

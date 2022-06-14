@@ -8,6 +8,18 @@ import { CopilotService } from '../../services/copilot.service';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Router } from '@angular/router';
+import { SearchGridService } from '../../services/search-grid.service';
+// import { environment } from 'src/environments/environment';
+// import { IServerSideDatasource } from 'ag-grid-community';
+
+// import 'ag-grid-community/dist/styles/ag-grid.css';
+// import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import { ActionType, EditMode } from 'src/app/shared/models/actionType';
+import { CopilotDetailComponent } from '../copilot-detail/copilot-detail.component';
+import { SearchModel } from '../../models/search-model';
+import { LoginComponent } from 'src/app/auth/componments/login/login.component';
+
+declare var SearchServer: any;
 
 
 @Component({
@@ -18,6 +30,9 @@ import { Router } from '@angular/router';
 export class HomeComponent implements OnInit {
 
   public homework: CopilotModel;
+
+  public searchDTO: SearchModel = new SearchModel();
+
   public currentEdit: EditMode;
   public currentOperator = new OperatorModel();
   public currentAction = new ActionModel();
@@ -25,10 +40,15 @@ export class HomeComponent implements OnInit {
   public actionEditIndex = -1
   public isLogin: any;
 
+  @ViewChild('searchGrid', { read: ElementRef }) mySearchGrid: ElementRef | undefined;
+  // public itemsPerPage = 10;
+  gridApi: any;
+  gridColumnApi: any;
+  public rowData!: any;
+  public pageSize = 10;
+  public pageIndex = 1;
 
-
-  constructor(public dialog: MatDialog, public service: CopilotService, private messageService: ToastrService, private authService: AuthService,
-    private router: Router) {
+  constructor(public dialog: MatDialog, public service: CopilotService, private messageService: ToastrService, private authService: AuthService, public gridService: SearchGridService) {
     this.homework = new CopilotModel();
     this.currentEdit = EditMode.Operator;
   }
@@ -36,7 +56,8 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLogin = this.authService.isLoggedIn();
-
+    this.rowData = { data: [], page: 1, total: 0 };
+    this.initializedGrid();
   }
   handelOperatorAction(event: any) {
     if (event == ActionType[1]) {
@@ -44,117 +65,89 @@ export class HomeComponent implements OnInit {
       this.currentOperator = new OperatorModel()
     }
   }
-  
-
-  onDrop(type: string, event: CdkDragDrop<string[]>) {
-    if (type == "operator") moveItemInArray(this.homework.opers, event.previousIndex, event.currentIndex);
-    else if (type == "action") moveItemInArray(this.homework.actions, event.previousIndex, event.currentIndex);
-  }
-  itemDelete(type: string, index: any) {
-    if (type == "action") this.homework.actions.splice(index, 1);
-    if (type == "operator") this.homework.opers.splice(index, 1);
-  }
-  itemEdit(type: string, index: any) {
-    if (type == "action") {
-      this.currentAction = this.copy(this.homework.actions[index]);
-      this.actionEditIndex = index;
+  initializedGrid() {
+    this.gridService.gridOptions = {
+      defaultColDef: {
+        sortable: false,
+        resizeable: true,
+        filter: true,
+        menuTabs: ['generalMenuTab', 'columnsMenuTab'],
+        minWidth: 100,
+        flex: 1
+      },
+      columnDefs: this.gridService.getColumnDef(),
+      context: {
+        componmentParent: this,
+        gridDiv: this.mySearchGrid?.nativeElement
+      },
+      paginationPageSize: this.pageSize,
+      // onCellClicked: this.onCellClicked.bind(this)
     }
-    if (type == "operator") {
-      this.currentOperator = this.copy(this.homework.opers[index]);
-      this.operatorEditIndex = index;
-    }
   }
-  itemSave(event: any, objectType: any) {
+  onGridReady(params: any) {
+    this.gridService.get(``).subscribe((data) => {
+      this.rowData = data.data;
+    });
+  }
+  onChangePage($event: any) {
+    this.pageIndex = $event.pageIndex + 1;
+    this.pageSize = $event.pageSize;
 
-    if (objectType == "operator") {
-      if (event == -1) {
-        this.homework.opers.push(this.currentOperator)
-      }
-      else {
-        this.homework.opers[this.operatorEditIndex] = this.copy(this.currentOperator);
-
-        this.operatorEditIndex = -1;
-      }
-      this.currentOperator = new OperatorModel()
-    }
-    else if (objectType == "action") {
-      if (event == -1) {
-        this.homework.actions.push(this.currentAction)
-      }
-      else {
-        this.homework.actions[this.actionEditIndex] = this.copy(this.currentAction);
-        this.actionEditIndex = -1;
-      }
-      this.currentAction = new ActionModel()
-    }
-
-  }
-  copy(data: any) {
-    return JSON.parse(JSON.stringify(data))
-  }
-  onFileChange(evt: any) {
-    let file = evt.target.files[0];
-    let fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      this.homework = JSON.parse(fileReader.result as string, (key, value) => {
-        if (key == "actions") {
-          (value as any[]).forEach(e => {
-            if (!e.location) e.location = [null, null];
-          });
-          return value;
-        }
-        else return value;
-
-      });
-    }
-    fileReader.readAsText(file);
-  }
-  download() {
-    var jsonString = JSON.stringify(this.homework);
-    var jsonPretty = JSON.stringify(JSON.parse(jsonString), null, 4);
-    var file = new Blob([jsonPretty], { type: 'text/plain' });
-    var fileName = this.homework.stage_name + '_' + this.homework.opers.map(o => o.name).join('+') + '.json';
-    const url = window.URL.createObjectURL(file);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', fileName);
-    document.body.appendChild(link);
-    link.click();
-  }
-  upload() {
-    // if(this.authService.isRole("Ad"))
-    this.service.upload(JSON.stringify(this.homework)).subscribe(res => {
-      if (res.data && res.status_code == 200) {
-        this.messageService.success(`上传成功，请妥善保管神秘代码：${res.data.id}`, "", { timeOut: 10000 })
-      }
-    })
+    this.search();
   }
   login() {
-    this.router.navigateByUrl('/login');
+    const dialogRef = this.dialog.open(LoginComponent, {
+      data: {},
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.authService.login(result.email, result.password).then(res => {
+          if (res.data) {
+            this.messageService.success("登录成功")
+            this.isLogin = true;
+          }
+          else this.messageService.error(`登录失败：${res.message}`)
+        })
+      }
+    });
   }
   logout() {
-    this.authService.logout()
+    this.authService.logout();
+    this.messageService.success("用户登出成功")
     this.isLogin = false;
   }
-}
+  openHomeworkDialog(data: any): void {
+    if (data && data.id) {
+      this.service.getByID(data.id).subscribe(res => {
 
-
-
-export class CopilogDetailDialog {
-  constructor(
-    public dialogRef: MatDialogRef<CopilogDetailDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: CopilotModel,
-  ) { }
-
-  onNoClick(): void {
-    this.dialogRef.close();
+        if (res.status_code == "200") {
+          const dialogRef = this.dialog.open(CopilotDetailComponent, {
+            width: '90%',
+            height: '85%',
+            data: { homework: JSON.parse(res.data.content), role: this.authService.getRole(), id: data.id },
+          });
+          dialogRef.afterClosed().subscribe(result => {
+          });
+        } else {
+          this.messageService.error("数据读取失败")
+        }
+      })
+    }
+    else {
+      const dialogRef = this.dialog.open(CopilotDetailComponent, {
+        width: '90%',
+        height: '85%',
+        data: { homework: new CopilotModel(), role: this.authService.getRole() },
+      });
+      dialogRef.afterClosed().subscribe(result => {
+      });
+    }
   }
-}
-enum EditMode {
-  Operator = 1,
-  Group = 2
-}
-enum ActionType {
-  新增 = 1,
-  更新 = 2
+  search() {
+    var url = `?page=${this.pageIndex}&limit=${this.pageSize}`;
+    if (this.searchDTO.stage_name && this.searchDTO.stage_name.trim() != '') url += `&stage_name=${this.searchDTO.stage_name}`
+    this.gridService.get(url).subscribe((data) => {
+      this.rowData = data.data;
+    });
+  }
 }
