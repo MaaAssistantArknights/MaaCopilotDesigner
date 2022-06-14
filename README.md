@@ -19,13 +19,7 @@
 [网址](https://www.prts.plus/maacopilotdesigner)
 
 
-### 贡献/参与者
-
-感谢所有参与到开发/测试中的朋友们，是大家的帮助让 Copliot System 越来越好！ (*´▽｀)ノノ 
-
-[![Contributors](https://contributors-img.web.app/image?repo=MaaAssistantArknights/MaaCopilotDesigner)](https://github.com/MaaAssistantArknights/MaaCopilotDesigner/graphs/contributors)
-
-### npm包及开源库
+## npm包及开源库
 
 * [Angular Material UI](https://material.angular.io/)
 * [AG Grid](https://www.ag-grid.com/)
@@ -52,3 +46,11 @@
 
 * 生产:
   1. 打开终端输入`ng build` Build结果会保存在 `dist/` 目录
+
+
+## 贡献/参与者
+
+感谢所有参与到开发/测试中的朋友们，是大家的帮助让 Copliot System 越来越好！ (*´▽｀)ノノ 
+
+[![Contributors](https://contributors-img.web.app/image?repo=MaaAssistantArknights/MaaCopilotDesigner)](https://github.com/MaaAssistantArknights/MaaCopilotDesigner/graphs/contributors)
+
