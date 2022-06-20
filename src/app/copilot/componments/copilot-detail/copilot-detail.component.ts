@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { EditMode } from 'src/app/shared/models/actionType';
 import { ActionModel } from '../../models/action-model';
-import { CopilotModel } from '../../models/copilot-model';
+import { CopilotModel, OperatorGroupModel } from '../../models/copilot-model';
 import { OperatorModel } from '../../models/operator-model';
 import { moveItemInArray, CdkDragDrop } from "@angular/cdk/drag-drop";
 import { CopilotService } from '../../services/copilot.service';
@@ -16,10 +16,13 @@ import { ToastrService } from 'ngx-toastr';
 export class CopilotDetailComponent {
 
   public currentEdit: EditMode = EditMode.Operator;
+  public editList: any[];
   public currentOperator = new OperatorModel();
   public currentAction = new ActionModel();
+  public currentGroup = new OperatorGroupModel();
   public operatorEditIndex = -1
   public actionEditIndex = -1
+  public groupEditIndex = -1
   public userRole: string = '';
   public homework: CopilotModel = new CopilotModel();
   public id = 0;
@@ -34,6 +37,11 @@ export class CopilotDetailComponent {
     this.homework = data.homework;
     this.userRole = data.role;
     this.id = data.id;
+    this.currentEdit = EditMode.Operator;
+    this.editList = [
+      { "name": "修改干员", "id": 1 },
+      { "name": "修改群组", "id": 2 },
+    ]
   }
 
   onNoClick(): void {
@@ -44,8 +52,9 @@ export class CopilotDetailComponent {
     else if (type == "action") moveItemInArray(this.homework.actions, event.previousIndex, event.currentIndex);
   }
   itemDelete(type: string, index: any) {
-    if (type == "action") this.homework.actions.splice(index, 1);
-    if (type == "operator") this.homework.opers.splice(index, 1);
+    if (type == "action") { this.homework.actions.splice(index, 1); this.actionEditIndex = -1; }
+    if (type == "operator") { this.homework.opers.splice(index, 1); this.operatorEditIndex = -1; }
+    if (type == "group") { this.homework.groups.splice(index, 1); this.groupEditIndex = -1; }
   }
   itemEdit(type: string, index: any) {
     if (type == "action") {
@@ -56,12 +65,15 @@ export class CopilotDetailComponent {
       this.currentOperator = this.copy(this.homework.opers[index]);
       this.operatorEditIndex = index;
     }
+    if (type == "group") {
+      this.currentGroup = this.copy(this.homework.groups[index]);
+      this.groupEditIndex = index;
+    }
   }
   clear() {
     this.homework = new CopilotModel();
   }
   itemSave(event: any, objectType: any) {
-
     if (objectType == "operator") {
       if (event == -1) {
         this.homework.opers.push(this.currentOperator)
@@ -83,6 +95,16 @@ export class CopilotDetailComponent {
       }
       this.currentAction = new ActionModel()
     }
+    else if (objectType == "group") {
+      if (event == -1) {
+        this.homework.groups.push(this.currentGroup)
+      }
+      else {
+        this.homework.groups[this.groupEditIndex] = this.copy(this.currentGroup);
+        this.groupEditIndex = -1;
+      }
+      this.currentGroup = new OperatorGroupModel()
+    }
 
   }
   copy(data: any) {
@@ -92,7 +114,7 @@ export class CopilotDetailComponent {
     let file = evt.target.files[0];
     let fileReader = new FileReader();
     fileReader.onload = (e) => {
-      this.homework = JSON.parse(fileReader.result as string, (key, value) => {
+      this.homework.load(JSON.parse(fileReader.result as string, (key, value) => {
         if (key == "actions") {
           (value as any[]).forEach(e => {
             if (!e.location) e.location = [null, null];
@@ -100,13 +122,18 @@ export class CopilotDetailComponent {
           return value;
         }
         else return value;
-
-      });
+      }));
+      this.operatorEditIndex = -1
+      this.actionEditIndex = -1
+      this.groupEditIndex = -1
+      this.currentOperator = new OperatorModel();
+      this.currentAction = new ActionModel();
+      this.currentGroup = new OperatorGroupModel();
     }
     fileReader.readAsText(file);
   }
   download() {
-    this.homework.minimum_required = "v4.0";
+    this.homework.cleanUP();
     var jsonString = JSON.stringify(this.homework);
     var jsonPretty = JSON.stringify(JSON.parse(jsonString), null, 4);
     var file = new Blob([jsonPretty], { type: 'text/plain' });
@@ -119,8 +146,8 @@ export class CopilotDetailComponent {
     link.click();
   }
   upload() {
+    this.homework.cleanUP();
     if (this.userRole && this.userRole != "User") {
-      this.homework.minimum_required = "v4.0";
       if (this.id && this.id > 0) {
         this.service.upload(JSON.stringify(this.homework)).subscribe(res => {
           if (res.data && res.status_code == 200) {

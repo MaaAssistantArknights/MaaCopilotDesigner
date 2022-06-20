@@ -1,0 +1,55 @@
+<table class="groupTable" style="width: 100%;">
+    <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">修改</th>
+            <th scope="col">群组名</th>
+            <th scope="col">删除</th>
+        </tr>
+    </thead>
+    <tbody cdkDropList (cdkDropListDropped)="onDrop('group',$event)">
+        <tr *ngFor="let group of groups;let i = index" cdkDrag cdkDragLockAxis="y">
+            <th class="col-xs">
+                <div class="drag-handle">
+                    <ng-container [ngTemplateOutlet]="dragHandleTmpl">
+                    </ng-container>
+                </div>
+            </th>
+            <td class="col-md"><button type='button' (click)="edit(i)" class='btn btn-default'><span
+                        class="material-symbols-outlined">
+                        edit
+                    </span></button></td>
+            <td class="col-md"> {{ group.name}}</td>
+            <td class="col-md"><button type='button' (click)="delete(i)" class='btn btn-default'><span
+                        class="material-symbols-outlined">
+                        delete
+                    </span></button></td>
+        </tr>
+    </tbody>
+</table>
+
+<form class="form" (submit)="save()">
+    <div class="row" style="font-size: 12px">
+        <div class="col-6">
+            <mat-form-field appearance="outline">
+                <mat-label>群组名</mat-label>
+                <input type="text" matInput [(ngModel)]="group.name" [ngModelOptions]="{standalone: true}">
+            </mat-form-field>
+        </div>
+    </div>
+    <button *ngIf="index>=0" type="submit" id="updateActionButton" class="btn btn-primary">更新</button>
+    <button *ngIf="index<0" type="submit" id="updateActionButton" class="btn btn-primary">新增</button>
+</form>
+
+<operator *ngIf="index>=0" [operators]="group.opers" (OnSaveClick)="itemSave($event)" [operator]="currentOperator"
+    (OnEditClick)="itemEdit($event)" (OnDeleteClick)="itemDelete($event)" [index]="operatorEditIndex">
+</operator>
+
+<ng-template #dragHandleTmpl>
+    <svg class="bi bi-list handle" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd"
+            d="M2.5 11.5A.5.5 0 013 11h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5zm0-4A.5.5 0 013 7h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5zm0-4A.5.5 0 013 3h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5z"
+            clip-rule="evenodd" />
+    </svg>
+</ng-template>

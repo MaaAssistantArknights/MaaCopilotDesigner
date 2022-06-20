@@ -3,10 +3,9 @@ import { FormControl } from '@angular/forms';
 import { OperatorModel } from '../../models/operator-model';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { moveItemInArray, CdkDragDrop } from "@angular/cdk/drag-drop";
 
 declare const charName: any[];
-
-type NewType = Observable<string[]>;
 
 @Component({
   selector: 'operator',
@@ -16,9 +15,16 @@ type NewType = Observable<string[]>;
 export class OperatorComponent implements OnInit {
 
   myControl = new FormControl('');
-  @Input() operator = new OperatorModel();
+  @Input() operators!: OperatorModel[];
   @Input() index: number;
+
   @Output() OnSaveClick: EventEmitter<any> = new EventEmitter<any>();
+  @Output() OnEditClick: EventEmitter<number> = new EventEmitter<number>();
+  @Output() OnDeleteClick: EventEmitter<number> = new EventEmitter<number>();
+
+  @Input() operator = new OperatorModel();
+
+
   filteredOptions: Observable<string[]>;
 
   public operatorList: any[];
@@ -37,6 +43,7 @@ export class OperatorComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (!this.operator) this.operators = [] as OperatorModel[]
   }
   ngOnChanges(changes: SimpleChanges) {
     this.myControl.setValue(this.operator.name)
@@ -48,6 +55,15 @@ export class OperatorComponent implements OnInit {
   }
   public save() {
     this.OnSaveClick.emit(this.index);
+  }
+  public edit(i: number) {
+    this.OnEditClick.emit(i);
+  }
+  public delete(i: number) {
+    this.OnDeleteClick.emit(i);
+  }
+  onDrop(type: string, event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.operators, event.previousIndex, event.currentIndex);
   }
 
 }

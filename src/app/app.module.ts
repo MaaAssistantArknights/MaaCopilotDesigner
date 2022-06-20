@@ -17,6 +17,7 @@ import { AuthService } from './auth/services/auth.service';
 import { ToastrModule } from 'ngx-toastr';
 import { SearchGridService } from './copilot/services/search-grid.service';
 import { ChangePassComponent } from './auth/componments/change-pass/change-pass.component';
+import { OperatorGroupComponent } from './copilot/componments/operator-group/operator-group.component';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { ChangePassComponent } from './auth/componments/change-pass/change-pass.
     AppComponent,
     ActionComponent,
     OperatorComponent,
+    OperatorGroupComponent,
     SearchCopilotComponent,
     HomeComponent,
     CopilotDetailComponent,

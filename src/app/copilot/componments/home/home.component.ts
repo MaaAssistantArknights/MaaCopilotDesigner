@@ -20,7 +20,6 @@ import { SearchModel } from '../../models/search-model';
 import { LoginComponent } from 'src/app/auth/componments/login/login.component';
 import { ChangePassComponent } from 'src/app/auth/componments/change-pass/change-pass.component';
 
-declare var SearchServer: any;
 
 
 @Component({
@@ -155,10 +154,12 @@ export class HomeComponent implements OnInit {
       this.service.getByID(data.id).subscribe(res => {
 
         if (res.status_code == "200") {
+          let homeworkData = new CopilotModel();
+          homeworkData.load(JSON.parse(res.data.content) as CopilotModel);
           const dialogRef = this.dialog.open(CopilotDetailComponent, {
             width: '90%',
             height: '85%',
-            data: { homework: JSON.parse(res.data.content), role: this.authService.getRole(), id: data.id },
+            data: { homework: homeworkData, role: this.authService.getRole(), id: data.id },
           });
           dialogRef.afterClosed().subscribe(result => {
             this.search();

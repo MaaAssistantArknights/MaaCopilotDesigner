@@ -45,51 +45,21 @@
   </div>
   <div class="row">
     <div class="col-4">
-      <!-- <mat-radio-group [(ngModel)]="currentEdit">
-        <mat-radio-button value="1">修改干员</mat-radio-button>
-        <mat-radio-button value="2">修改群组</mat-radio-button>
-      </mat-radio-group> -->
+      <mat-radio-group name="editList" fxLayout="column" [(ngModel)]="currentEdit">
+        <mat-radio-button *ngFor="let op of editList" [value]="op.id" name="editList">{{ op.name}}</mat-radio-button>
+      </mat-radio-group>
       <div *ngIf="currentEdit==1">
-        <table class="operatorTable" style="width: 100%;">
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col">修改</th>
-              <th scope="col">干员名字</th>
-              <th scope="col">技能</th>
-              <th scope="col">技能用法</th>
-              <th scope="col">删除</th>
-            </tr>
-          </thead>
-          <tbody cdkDropList (cdkDropListDropped)="onDrop('operator',$event)">
-            <tr *ngFor="let user of homework.opers;let i = index" cdkDrag cdkDragLockAxis="y">
-              <th class="col-xs">
-                <div class="drag-handle">
-                  <ng-container [ngTemplateOutlet]="dragHandleTmpl">
-                  </ng-container>
-                </div>
-              </th>
-              <td class="col-md"><button type='button' (click)="itemEdit('operator',i)" class='btn btn-default'><span
-                    class="material-symbols-outlined">
-                    edit
-                  </span></button></td>
-              <td class="col-md">
-                {{ user.name }}</td>
-              <td class="col-md">{{ user.skill }}
-              </td>
-              <td class="col-md">
-                {{ user.skill_usage }}</td>
-              <td class="col-md"><button type='button' (click)="itemDelete('operator',i)" class='btn btn-default'><span
-                    class="material-symbols-outlined">
-                    delete
-                  </span></button></td>
-            </tr>
-          </tbody>
-        </table>
-        <operator [operator]="currentOperator" [index]="operatorEditIndex" (OnSaveClick)="itemSave($event,'operator')">
+        <operator [operators]="homework.opers" (OnSaveClick)="itemSave($event,'operator')" [operator]="currentOperator"
+          (OnEditClick)="itemEdit('operator',$event)" (OnDeleteClick)="itemDelete('operator',$event)"
+          [index]="operatorEditIndex">
         </operator>
       </div>
-      <!-- <div *ngIf="currentEdit==2">修改群组</div> -->
+      <div *ngIf="currentEdit==2">
+        <operator-group [groups]="homework.groups" (OnSaveClick)="itemSave($event,'group')" [group]="currentGroup"
+          (OnEditClick)="itemEdit('group',$event)" (OnDeleteClick)="itemDelete('group',$event)"
+          [index]="groupEditIndex">
+        </operator-group>
+      </div>
     </div>
     <div class="col-8">
       <table class="actionTable" style="width: 100%;">

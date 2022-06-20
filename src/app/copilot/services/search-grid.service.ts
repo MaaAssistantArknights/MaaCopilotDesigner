@@ -29,7 +29,7 @@ export class SearchGridService {
       headerName: '关卡名', width: 150, colId: 'stage_name', field: 'stage_name', editable: false
     },
     {
-      headerName: '下载次数', width: 150, colId: 'downloads', field: 'downloads', editable: false
+      headerName: '浏览次数', width: 150, colId: 'downloads', field: 'downloads', editable: false
     },
     {
       headerName: '标题', width: 150, colId: 'title', field: 'title', editable: false
@@ -47,10 +47,11 @@ export class SearchGridService {
       headerName: '操作', width: 150, colId: 'id', field: 'id', editable: false,floatingFilterComponentParams: {suppressFilterButton:true}, cellRenderer: function (params: any) {
         var div = document.createElement('div');
         if (params.data.id) {          
-          var a = document.createElement('button');
-          a.innerText = "查看详细";
-          a.addEventListener('click', function (event: any) { params.context.componmentParent.openHomeworkDialog({ id: params.data.id }) })
-          div.append(a)
+          var detailBtn = document.createElement('button');
+          detailBtn.innerText = "查看详细";
+          detailBtn.addEventListener('click', function (event: any) { params.context.componmentParent.openHomeworkDialog({ id: params.data.id }) })          
+          div.append(detailBtn)
+
         }
         return div;
       }
