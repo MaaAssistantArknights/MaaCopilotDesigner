@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { EditMode } from 'src/app/shared/models/actionType';
 import { ActionModel } from '../../models/action-model';
@@ -109,6 +109,10 @@ export class CopilotDetailComponent {
   }
   copy(data: any) {
     return JSON.parse(JSON.stringify(data))
+  }
+  copyID(): void {
+    this.messageService.success("神秘代码已经复制到剪切板，请粘贴到MAA自动战斗界面载入");
+    navigator.clipboard.writeText(this.id+"");
   }
   onFileChange(evt: any) {
     let file = evt.target.files[0];

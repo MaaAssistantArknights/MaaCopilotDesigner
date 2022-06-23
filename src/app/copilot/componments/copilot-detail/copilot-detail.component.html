@@ -3,14 +3,15 @@
   <div class="row">
 
     <div class="col-2">
-      <button class="btn btn-primary" (click)="upload()">上传至服务器</button>
-      <!-- <button class="btn btn-primary" (click)="upload()">{{(id>0?"更新至服务器":"上传至服务器")}}</button> -->
-
+      <button class="btn btn-primary" (click)="upload()">上传至服务器</button>      
     </div>
     <div class="col-2">
       <button class="btn btn-danger" (click)="clear()">清除数据</button>
     </div>
-    <div class="col-4"></div>
+    <div class="col-2">
+      <button class="btn btn-primary" (click)="copyID()">复制神秘代码</button>
+    </div>
+    <div class="col-2"></div>
     <input type="file" id="selectedFile" #selectedFile (change)="onFileChange($event)" style="display: none;"
       name="files[]" size=1 />
     <div class="col-2">
