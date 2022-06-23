@@ -41,7 +41,7 @@ export class HomeComponent implements OnInit {
   public isLogin: any;
   public role: string = '';
 
-  @ViewChild('searchGrid', { read: ElementRef }) mySearchGrid: ElementRef | undefined;  
+  @ViewChild('searchGrid', { read: ElementRef }) mySearchGrid: ElementRef | undefined;
   gridApi: any;
   gridColumnApi: any;
   public rowData!: any;
@@ -84,7 +84,7 @@ export class HomeComponent implements OnInit {
         componmentParent: this,
         gridDiv: this.mySearchGrid?.nativeElement
       },
-      paginationPageSize: this.pageSize      
+      paginationPageSize: this.pageSize
     }
   }
   onGridReady(params: any) {
@@ -149,6 +149,10 @@ export class HomeComponent implements OnInit {
     this.messageService.success("用户登出成功")
     this.isLogin = false;
   }
+  copyID(id: any): void {
+    this.messageService.success("神秘代码已经复制到剪切板，请粘贴到MAA自动战斗界面载入");
+    navigator.clipboard.writeText(id);
+  }
   openHomeworkDialog(data: any): void {
     if (data && data.id) {
       this.service.getByID(data.id).subscribe(res => {
@@ -180,7 +184,8 @@ export class HomeComponent implements OnInit {
       });
     }
   }
-  search() {
+  search(reset: boolean = false) {
+    if (reset) this.pageIndex = 1;
     var url = `?page=${this.pageIndex}&limit=${this.pageSize}`;
     if (this.searchDTO.stage_name && this.searchDTO.stage_name.trim() != '') url += `&stage_name=${this.searchDTO.stage_name}`
     this.gridService.get(url).subscribe((data) => {
