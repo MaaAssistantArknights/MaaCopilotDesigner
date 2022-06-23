@@ -12,7 +12,7 @@ export class SearchGridService {
 
   constructor(private service: CopilotService) {
 
-    
+
 
   }
   get(path: string): Observable<any> {
@@ -44,14 +44,17 @@ export class SearchGridService {
       headerName: '上传者', width: 150, colId: 'uploader', field: 'uploader', editable: false
     },
     {
-      headerName: '操作', width: 150, colId: 'id', field: 'id', editable: false,floatingFilterComponentParams: {suppressFilterButton:true}, cellRenderer: function (params: any) {
+      headerName: '操作', width: 150, colId: 'id', field: 'id', editable: false, floatingFilterComponentParams: { suppressFilterButton: true }, cellRenderer: function (params: any) {
         var div = document.createElement('div');
-        if (params.data.id) {          
+        if (params.data.id) {
           var detailBtn = document.createElement('button');
           detailBtn.innerText = "查看详细";
-          detailBtn.addEventListener('click', function (event: any) { params.context.componmentParent.openHomeworkDialog({ id: params.data.id }) })          
+          detailBtn.addEventListener('click', function (event: any) { params.context.componmentParent.openHomeworkDialog({ id: params.data.id }) })
+          var copyBtn = document.createElement('button');
+          copyBtn.innerText = "复制神秘代码";
+          copyBtn.addEventListener('click', function (event: any) { params.context.componmentParent.copyID(params.data.id) })
           div.append(detailBtn)
-
+          div.append(copyBtn)
         }
         return div;
       }
