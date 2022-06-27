@@ -151,7 +151,7 @@ export class HomeComponent implements OnInit {
   }
   copyID(id: any): void {
     this.messageService.success("神秘代码已经复制到剪切板，请粘贴到MAA自动战斗界面载入");
-    navigator.clipboard.writeText(id);
+    navigator.clipboard.writeText("maa://" + id);
   }
   openHomeworkDialog(data: any): void {
     if (data && data.id) {

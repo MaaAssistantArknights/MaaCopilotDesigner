@@ -112,7 +112,7 @@ export class CopilotDetailComponent {
   }
   copyID(): void {
     this.messageService.success("神秘代码已经复制到剪切板，请粘贴到MAA自动战斗界面载入");
-    navigator.clipboard.writeText(this.id+"");
+    navigator.clipboard.writeText("maa://"+this.id+"");
   }
   onFileChange(evt: any) {
     let file = evt.target.files[0];
