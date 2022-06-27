@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { userRoleEnum } from 'src/app/shared/userRoleEnum';
 import { CopilotService } from './copilot.service';
 
 @Injectable({
@@ -9,11 +10,10 @@ export class SearchGridService {
   options: BehaviorSubject<any> = new BehaviorSubject({});
   gridOptions: any;
   query: string = '';
+  api: any;
+  columnApi: any;
 
   constructor(private service: CopilotService) {
-
-
-
   }
   get(path: string): Observable<any> {
     return this.service.search(path);
@@ -26,25 +26,29 @@ export class SearchGridService {
   }
   getColumnDef() {
     return [{
-      headerName: '关卡名', width: 150, colId: 'stage_name', field: 'stage_name', editable: false
+      headerName: '关卡名', maxWidth: 125, colId: 'stage_name', field: 'stage_name', editable: false, resizable: true, suppressSizeToFit: true
     },
     {
-      headerName: '浏览次数', width: 150, colId: 'downloads', field: 'downloads', editable: false
+      headerName: '浏览次数', maxWidth: 100, colId: 'views', field: 'views', editable: false, resizable: true
     },
     {
-      headerName: '标题', width: 150, colId: 'title', field: 'title', editable: false
+      headerName: '标题', width: 150, colId: 'title', field: 'title', editable: false, resizable: true
     },
     {
-      headerName: '描述', width: 150, colId: 'detail', field: 'detail', editable: false
-    },
-    // {
-    //   headerName: '干员', width: 150, colId: 'content', field: 'content', editable: false,
-    // },
-    {
-      headerName: '上传者', width: 150, colId: 'uploader', field: 'uploader', editable: false
+      headerName: '描述', width: 150, colId: 'detail', field: 'detail', editable: false, resizable: true
     },
     {
-      headerName: '操作', width: 150, colId: 'id', field: 'id', editable: false, floatingFilterComponentParams: { suppressFilterButton: true }, cellRenderer: function (params: any) {
+      headerName: '干员', width: 150, colId: 'operators', field: 'operators', editable: false, resizable: true, cellRenderer: function (params: any) {
+        if (params.data.operators) return params.data.operators.join(',')
+        else return ''
+
+      }
+    },
+    {
+      headerName: '上传者', maxWidth: 100, colId: 'uploader', field: 'uploader', editable: false, resizable: true
+    },
+    {
+      headerName: '操作', maxWidth: 250, colId: 'id', field: 'id', editable: false, resizable: true, suppressSizeToFit: true, floatingFilterComponentParams: { suppressFilterButton: true }, cellRenderer: function (params: any) {
         var div = document.createElement('div');
         if (params.data.id) {
           var detailBtn = document.createElement('button');
@@ -55,6 +59,12 @@ export class SearchGridService {
           copyBtn.addEventListener('click', function (event: any) { params.context.componmentParent.copyID(params.data.id) })
           div.append(detailBtn)
           div.append(copyBtn)
+          if (params.data.uploader == params.context.componmentParent.currentUser || (params.context.componmentParent.role && parseInt(userRoleEnum[params.context.componmentParent.role]) >= 50)) {
+            var deleteBtn = document.createElement('button');
+            deleteBtn.innerText = "删除作业";
+            deleteBtn.addEventListener('click', function (event: any) { params.context.componmentParent.deleteHomework(params.data.id) })
+            div.append(deleteBtn)
+          }
         }
         return div;
       }

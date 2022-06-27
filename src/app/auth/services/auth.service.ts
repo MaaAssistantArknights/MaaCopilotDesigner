@@ -12,8 +12,7 @@ export class AuthService {
 
   }
 
-  login(email: string, password: string) {
-    // return this.http.post(environment.baseurl + '/user/login', { email: 'super@prts.plus', password: 'TPDLEMPUWNQZUFIL' })
+  login(email: string, password: string) {    
     return this.http.post(environment.baseurl + '/user/login', { email, password })
       .toPromise().then(res => this.setSession(res));
   }
@@ -22,11 +21,9 @@ export class AuthService {
     if (authResult.data) {
       const expiresAt = moment(authResult.data.valid_before)
       localStorage.setItem('id_token', authResult.data.token);
-      localStorage.setItem('username', authResult.data.user_name);
+      localStorage.setItem('username', authResult.data.user_info.user_name);
       localStorage.setItem("expires_at", JSON.stringify(expiresAt.valueOf()));
-      this.http.get(environment.baseurl + '/user/info/me', { headers: { 'Authorization': 'Bearer ' + authResult.data.token } }).subscribe(userResponse => {
-        localStorage.setItem('role', (userResponse as any).data.role);
-      })
+      localStorage.setItem('role', authResult.data.user_info.role);
     }
     return authResult;
   }
@@ -40,7 +37,7 @@ export class AuthService {
   changePassword(original_password: string, new_password: string) {
     return this.http.post<ServerResponseModel>(environment.baseurl + '/user/update/password', { original_password, new_password }, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem("id_token") as string } })
   }
-  createUser(object :any) {
+  createUser(object: any) {
     return this.http.post<ServerResponseModel>(environment.baseurl + '/user/create', object, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem("id_token") as string } })
   }
   public isLoggedIn() {
@@ -61,5 +58,8 @@ export class AuthService {
   }
   getRole() {
     return localStorage.getItem("role") as string;
+  }
+  getUserName() {
+    return localStorage.getItem("username") as string;
   }
 }

@@ -25,4 +25,7 @@ export class CopilotService {
   getByID(id: string): Observable<any> {
     return this.http.get<ServerResponseModel>(environment.baseurl + '/copilot/get/' + id)
   }
+  delete(id: string): Observable<any> {
+    return this.http.post<ServerResponseModel>(environment.baseurl + '/copilot/delete', { id }, this.setHeader())
+  }
 }
