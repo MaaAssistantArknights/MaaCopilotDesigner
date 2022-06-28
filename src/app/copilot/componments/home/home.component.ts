@@ -1,19 +1,12 @@
-import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { MatDialog, } from '@angular/material/dialog';
 import { CopilotModel } from '../../models/copilot-model';
-import { moveItemInArray, CdkDragDrop } from "@angular/cdk/drag-drop";
 import { OperatorModel } from '../../models/operator-model';
 import { ActionModel } from '../../models/action-model';
 import { CopilotService } from '../../services/copilot.service';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { Router } from '@angular/router';
 import { SearchGridService } from '../../services/search-grid.service';
-// import { environment } from 'src/environments/environment';
-// import { IServerSideDatasource } from 'ag-grid-community';
-
-// import 'ag-grid-community/dist/styles/ag-grid.css';
-// import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import { ActionType, EditMode } from 'src/app/shared/models/actionType';
 import { CopilotDetailComponent } from '../copilot-detail/copilot-detail.component';
 import { SearchModel } from '../../models/search-model';
@@ -40,6 +33,7 @@ export class HomeComponent implements OnInit {
   public actionEditIndex = -1
   public isLogin: any;
   public role: string = '';
+  public currentUser: string = '';
 
   @ViewChild('searchGrid', { read: ElementRef }) mySearchGrid: ElementRef | undefined;
   gridApi: any;
@@ -55,13 +49,17 @@ export class HomeComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.isLogin = this.authService.isLoggedIn();
     this.rowData = { data: [], page: 1, total: 0 };
-    this.role = this.authService.getRole();
+    this.setUserInfo();
     this.initializedGrid();
   }
   AfterViewInit(): void {
+    this.setUserInfo();
+  }
+  setUserInfo(): void {
+    this.isLogin = this.authService.isLoggedIn();
     this.role = this.authService.getRole();
+    this.currentUser = this.authService.getUserName();
   }
   handelOperatorAction(event: any) {
     if (event == ActionType[1]) {
@@ -88,14 +86,16 @@ export class HomeComponent implements OnInit {
     }
   }
   onGridReady(params: any) {
+    this.gridService.api = params.api;
+    this.gridService.columnApi = params.columnApi;
     this.gridService.get(``).subscribe((data) => {
       this.rowData = data.data;
     });
+    this.gridService.api.sizeColumnsToFit()
   }
   onChangePage($event: any) {
     this.pageIndex = $event.pageIndex + 1;
     this.pageSize = $event.pageSize;
-
     this.search();
   }
   changepass() {
@@ -122,7 +122,8 @@ export class HomeComponent implements OnInit {
         this.authService.login(result.email, result.password).then(res => {
           if (res.data) {
             this.messageService.success("登录成功")
-            this.isLogin = true;
+            this.setUserInfo()
+            this.gridService.api.refreshCells({ force: true });
           }
           else this.messageService.error(`登录失败：${res.message}`)
         })
@@ -147,11 +148,21 @@ export class HomeComponent implements OnInit {
   logout() {
     this.authService.logout();
     this.messageService.success("用户登出成功")
-    this.isLogin = false;
+    this.setUserInfo()
+    this.gridService.api.refreshCells({ force: true });
   }
   copyID(id: any): void {
     this.messageService.success("神秘代码已经复制到剪切板，请粘贴到MAA自动战斗界面载入");
     navigator.clipboard.writeText("maa://" + id);
+  }
+  deleteHomework(id: any): void {
+    this.service.delete(id).subscribe(res => {
+      if (res.status_code == 200) {
+        this.messageService.success("删除作业成功")
+        this.search();
+      }
+      else this.messageService.error(`删除失败${res.message}`)
+    })
   }
   openHomeworkDialog(data: any): void {
     if (data && data.id) {

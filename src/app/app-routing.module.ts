@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './copilot/componments/home/home.component';
 
 const routes: Routes = [{path:'',redirectTo:'maacopilotdesigner',pathMatch:'full'},
-{path:'maacopilotdesigner',component: HomeComponent}];
+{path:'/maacopilotdesigner',component: HomeComponent}];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
