@@ -13,6 +13,8 @@ import { SearchModel } from '../../models/search-model';
 import { LoginComponent } from 'src/app/auth/componments/login/login.component';
 import { ChangePassComponent } from 'src/app/auth/componments/change-pass/change-pass.component';
 
+declare var RateRenderer: any;
+declare var ActionRenderer: any;
 
 
 @Component({
@@ -41,6 +43,10 @@ export class HomeComponent implements OnInit {
   public rowData!: any;
   public pageSize = 10;
   public pageIndex = 1;
+  components = {
+    'raterenderer': RateRenderer,
+    'actionrenderer': ActionRenderer
+  };
 
   constructor(public dialog: MatDialog, public service: CopilotService, private messageService: ToastrService, private authService: AuthService, public gridService: SearchGridService) {
     this.homework = new CopilotModel();
@@ -82,7 +88,8 @@ export class HomeComponent implements OnInit {
         componmentParent: this,
         gridDiv: this.mySearchGrid?.nativeElement
       },
-      paginationPageSize: this.pageSize
+      paginationPageSize: this.pageSize,
+      onCellClicked: this.onCellClicked.bind(this)
     }
   }
   onGridReady(params: any) {
@@ -92,6 +99,34 @@ export class HomeComponent implements OnInit {
       this.rowData = data.data;
     });
     this.gridService.api.sizeColumnsToFit()
+  }
+  onCellClicked(params: any) {    
+    let id = params.data.id;
+    let action = params.event.target.dataset.action;
+    if (params.column.colId === "action") {
+
+      if (action == 'detail') {
+        this.openHomeworkDialog({ id })
+      }
+      else if (action == 'copy') {
+        this.copyID(id);
+      }
+      else if (action == 'delete') {
+        this.deleteHomework(id);
+      }
+    }
+    else if (params.column.colId === "rate") {
+      if (!this.isLogin) this.messageService.error(`请先登录才能使用本功能哟!`)
+      else {
+        this.service.rate(action, params.data.id).subscribe(res => {
+          if (res.status_code == 200) {
+            this.messageService.success("操作成功")
+            this.search();
+          }
+          else this.messageService.error(`${res.message}`)
+        })
+      }
+    }
   }
   onChangePage($event: any) {
     this.pageIndex = $event.pageIndex + 1;

@@ -22,6 +22,7 @@ export class AuthService {
       const expiresAt = moment(authResult.data.valid_before)
       localStorage.setItem('id_token', authResult.data.token);
       localStorage.setItem('username', authResult.data.user_info.user_name);
+      localStorage.setItem('id', authResult.data.user_info.user_name);
       localStorage.setItem("expires_at", JSON.stringify(expiresAt.valueOf()));
       localStorage.setItem('role', authResult.data.user_info.role);
     }

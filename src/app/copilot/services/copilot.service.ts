@@ -20,12 +20,15 @@ export class CopilotService {
   }
 
   search(path: string): Observable<any> {
-    return this.http.get<ServerResponseModel>(environment.baseurl + '/copilot/query' + path)
+    return this.http.get<ServerResponseModel>(environment.baseurl + '/copilot/query' + path, this.setHeader())
   }
   getByID(id: string): Observable<any> {
     return this.http.get<ServerResponseModel>(environment.baseurl + '/copilot/get/' + id)
   }
   delete(id: string): Observable<any> {
     return this.http.post<ServerResponseModel>(environment.baseurl + '/copilot/delete', { id }, this.setHeader())
+  }
+  rate(rating: string, id: string): Observable<any> {
+    return this.http.post<ServerResponseModel>(environment.baseurl + '/copilot/rating', { id, rating }, this.setHeader())
   }
 }
