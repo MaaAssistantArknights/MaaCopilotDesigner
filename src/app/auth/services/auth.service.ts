@@ -17,6 +17,10 @@ export class AuthService {
       .toPromise().then(res => this.setSession(res, email));
   }
 
+  forgetPass(email: string) {
+    return this.http.post<ServerResponseModel>(environment.baseurl + '/user/password/reset_request', { email })
+  }
+
   private setSession(authResult: any, email: string) {
     if (authResult.data) {
       const expiresAt = moment(authResult.data.valid_before)

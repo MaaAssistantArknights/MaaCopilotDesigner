@@ -20,7 +20,7 @@
                 <mat-label>权限</mat-label>
                 <mat-select name="role" formControlName="role" placeholder="请设置权限">
                     <mat-option value="Uploader">上传工具人</mat-option>
-                    <mat-option value="User">普通用户</mat-option>                    
+                    <mat-option value="User">普通用户</mat-option>
                     <mat-option value="Admin">管理员用户</mat-option>
                 </mat-select>
             </mat-form-field>
@@ -32,9 +32,12 @@
                 <input type="user_name" name="user_name" formControlName="user_name" matInput placeholder="请输入账号名字">
             </mat-form-field>
         </div>
-        <div class="row">
-            <div class="form-buttons">
-                <button class="btn btn-primary" (click)="login()">{{(role==''?"登录":"新建用户")}}</button>
+        <div class="form-buttons row">
+            <div class=" col-6">
+                <button class="btn btn-primary" (click)="submit()">{{(role==''?"登录":"新建用户")}}</button>
+            </div>
+            <div class=" col-6">
+                <button *ngIf="role==''" class="btn btn-primary" (click)="submit(true)">忘记密码</button>
             </div>
         </div>
     </form>

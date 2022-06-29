@@ -160,7 +160,7 @@ export class HomeComponent implements OnInit {
             if (res.status_code == 200) {
               this.messageService.success("账号信息修改成功")
               if (obj.email) this.authService.setData("email", value.email)
-              if (obj.user_name) this.authService.setData("user_name", value.user_name)
+              if (obj.user_name) this.authService.setData("username", value.user_name)
               this.search();
             }
             else this.messageService.error(`${res.message}`)
@@ -174,15 +174,26 @@ export class HomeComponent implements OnInit {
       data: {},
     });
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.authService.login(result.email, result.password).then(res => {
-          if (res.data) {
-            this.messageService.success("登录成功")
-            this.setUserInfo()
-            this.gridService.api.refreshCells({ force: true });
-          }
-          else this.messageService.error(`登录失败：${res.message}`)
-        })
+      if (result) {        
+        let value = result.value
+        if (result.type != 'forgetpass') {
+          this.authService.login(value.email, value.password).then(res => {
+            if (res.data) {
+              this.messageService.success("登录成功")
+              this.setUserInfo()
+              this.gridService.api.refreshCells({ force: true });
+            }
+            else this.messageService.error(`登录失败：${res.message}`)
+          })
+        }
+        else {
+          this.authService.forgetPass(value.email).subscribe(res => {
+            if (res.data) {
+              this.messageService.success("请求发送成功，请检查邮箱")
+            }
+            else this.messageService.error(`请求发送失败：${res.message}`)
+          })
+        }
       }
     });
   }
@@ -192,7 +203,7 @@ export class HomeComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.authService.createUser(result).subscribe(res => {
+        this.authService.createUser(result.value).subscribe(res => {
           if (res.status_code == 200) {
             this.messageService.success("新建用户成功")
           }

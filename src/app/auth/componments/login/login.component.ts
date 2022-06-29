@@ -16,7 +16,7 @@ export class LoginComponent {
   constructor(private fb: FormBuilder,
     public dialogRef: MatDialogRef<LoginComponent>,
     public messageService: ToastrService,
-    @Inject(MAT_DIALOG_DATA) public data: any) {    
+    @Inject(MAT_DIALOG_DATA) public data: any) {
     if (data && data.role) {
       this.role = data.role;
       this.form = this.fb.group({
@@ -29,19 +29,17 @@ export class LoginComponent {
       this.role = '';
       this.form = this.fb.group({
         email: ['', Validators.email],
-        password: ['', Validators.required]
+        password: ['']
       });
     }
 
   }
-  login() {
+  submit(forgetPass = false) {
     if (this.form.invalid) {
       this.messageService.error("邮件格式错误")
     }
     else {
-      this.dialogRef.close(this.form.value);
+      this.dialogRef.close({ type: (forgetPass ? 'forgetpass' : ''), value: this.form.value });
     }
-
   }
-
 }
