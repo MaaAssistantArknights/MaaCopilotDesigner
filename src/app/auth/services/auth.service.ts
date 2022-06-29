@@ -12,17 +12,18 @@ export class AuthService {
 
   }
 
-  login(email: string, password: string) {    
+  login(email: string, password: string) {
     return this.http.post(environment.baseurl + '/user/login', { email, password })
-      .toPromise().then(res => this.setSession(res));
+      .toPromise().then(res => this.setSession(res, email));
   }
 
-  private setSession(authResult: any) {
+  private setSession(authResult: any, email: string) {
     if (authResult.data) {
       const expiresAt = moment(authResult.data.valid_before)
       localStorage.setItem('id_token', authResult.data.token);
       localStorage.setItem('username', authResult.data.user_info.user_name);
-      localStorage.setItem('id', authResult.data.user_info.user_name);
+      localStorage.setItem('id', authResult.data.user_info.id);
+      localStorage.setItem('email', email);
       localStorage.setItem("expires_at", JSON.stringify(expiresAt.valueOf()));
       localStorage.setItem('role', authResult.data.user_info.role);
     }
@@ -34,9 +35,15 @@ export class AuthService {
     localStorage.removeItem("expires_at");
     localStorage.removeItem("username");
     localStorage.removeItem("role");
+    localStorage.removeItem("id");
+    localStorage.removeItem("email");
+
   }
   changePassword(original_password: string, new_password: string) {
     return this.http.post<ServerResponseModel>(environment.baseurl + '/user/update/password', { original_password, new_password }, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem("id_token") as string } })
+  }
+  updateInfo(object: any) {
+    return this.http.post<ServerResponseModel>(environment.baseurl + '/user/update/info', object, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem("id_token") as string } })
   }
   createUser(object: any) {
     return this.http.post<ServerResponseModel>(environment.baseurl + '/user/create', object, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem("id_token") as string } })
@@ -62,5 +69,11 @@ export class AuthService {
   }
   getUserName() {
     return localStorage.getItem("username") as string;
+  }
+  getEmail() {
+    return localStorage.getItem("email") as string;
+  }
+  setData(key: string, value: string) {
+    localStorage.setItem(key, value);
   }
 }

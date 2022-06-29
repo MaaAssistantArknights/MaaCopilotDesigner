@@ -1,21 +1,45 @@
 <div mat-dialog-content>
     <form [formGroup]="form">
         <div class="row">
-            <mat-form-field appearance="outline">
-                <mat-label>老密码</mat-label>
-                <input name="original_password" formControlName="original_password" matInput placeholder="请输入老密码">
-            </mat-form-field>
+            <mat-radio-group name="optionList" fxLayout="column" (change)="handleChange($event)">
+                <mat-radio-button *ngFor="let op of optionList" [value]="op.value" name="optionList">{{ op.name}}
+                </mat-radio-button>
+            </mat-radio-group>
         </div>
-        <div class="row">
-            <mat-form-field appearance="outline">
-                <mat-label>新密码</mat-label>
-                <input type="new_password" name="new_password" formControlName="new_password" matInput
-                    placeholder="请输入新密码">
-            </mat-form-field>
+        <br />
+        <div *ngIf="changePass">
+            <div class="row">
+                <mat-form-field appearance="outline">
+                    <mat-label>老密码</mat-label>
+                    <input name="original_password" formControlName="original_password" matInput placeholder="请输入老密码">
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field appearance="outline">
+                    <mat-label>新密码</mat-label>
+                    <input type="new_password" name="new_password" formControlName="new_password" matInput
+                        placeholder="请输入新密码">
+                </mat-form-field>
+            </div>
+        </div>
+        <div *ngIf="!changePass">
+            <div class="row">
+                <mat-form-field appearance="outline">
+                    <mat-label>昵称</mat-label>
+                    <input name="user_name" formControlName="user_name" matInput
+                        placeholder="请输入新昵称">
+                </mat-form-field>
+            </div>
+            <div *ngIf="!changePass" class="row">
+                <mat-form-field appearance="outline">
+                    <mat-label>用户名</mat-label>
+                    <input name="email" formControlName="email" matInput placeholder="请输入邮件">
+                </mat-form-field>
+            </div>
         </div>
         <div class="row">
             <div class="form-buttons">
-                <button class="btn btn-primary" (click)="login()">修改密码</button>
+                <button class="btn btn-primary" (click)="save()">{{(changePass?"修改密码":"修改信息")}}</button>
             </div>
         </div>
     </form>

@@ -16,7 +16,6 @@ export class LoginComponent {
   constructor(private fb: FormBuilder,
     public dialogRef: MatDialogRef<LoginComponent>,
     public messageService: ToastrService,
-
     @Inject(MAT_DIALOG_DATA) public data: any) {    
     if (data && data.role) {
       this.role = data.role;

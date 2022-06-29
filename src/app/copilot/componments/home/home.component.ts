@@ -12,6 +12,8 @@ import { CopilotDetailComponent } from '../copilot-detail/copilot-detail.compone
 import { SearchModel } from '../../models/search-model';
 import { LoginComponent } from 'src/app/auth/componments/login/login.component';
 import { ChangePassComponent } from 'src/app/auth/componments/change-pass/change-pass.component';
+import { userRoleEnum } from 'src/app/shared/userRoleEnum';
+import { EmailValidator } from '@angular/forms';
 
 declare var RateRenderer: any;
 declare var ActionRenderer: any;
@@ -36,6 +38,7 @@ export class HomeComponent implements OnInit {
   public isLogin: any;
   public role: string = '';
   public currentUser: string = '';
+  public hasEditPermission: boolean = false;
 
   @ViewChild('searchGrid', { read: ElementRef }) mySearchGrid: ElementRef | undefined;
   gridApi: any;
@@ -66,6 +69,7 @@ export class HomeComponent implements OnInit {
     this.isLogin = this.authService.isLoggedIn();
     this.role = this.authService.getRole();
     this.currentUser = this.authService.getUserName();
+    // this.hasEditPermission = (userRoleEnum[this.role as keyof typeof userRoleEnum]) >= 50 ||    
   }
   handelOperatorAction(event: any) {
     if (event == ActionType[1]) {
@@ -100,7 +104,7 @@ export class HomeComponent implements OnInit {
     });
     this.gridService.api.sizeColumnsToFit()
   }
-  onCellClicked(params: any) {    
+  onCellClicked(params: any) {
     let id = params.data.id;
     let action = params.event.target.dataset.action;
     if (params.column.colId === "action") {
@@ -135,16 +139,33 @@ export class HomeComponent implements OnInit {
   }
   changepass() {
     const dialogRef = this.dialog.open(ChangePassComponent, {
-      data: {},
+      data: { type: "name" },
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.authService.changePassword(result.original_password, result.new_password).subscribe(res => {
-          if (res.status_code == 200) {
-            this.messageService.success("密码修改成功")
-          }
-          else this.messageService.error(`${res.message}`)
-        })
+        let value = result.value;
+        if (result.changePass) {
+          this.authService.changePassword(value.original_password, value.new_password).subscribe(res => {
+            if (res.status_code == 200) {
+              this.messageService.success("密码修改成功")
+            }
+            else this.messageService.error(`${res.message}`)
+          })
+        }
+        else {
+          var obj = { email: value.email, user_name: value.user_name };
+          if (obj.email == "") obj.email = null;
+          if (obj.user_name == "") obj.user_name = null;
+          this.authService.updateInfo(obj).subscribe(res => {
+            if (res.status_code == 200) {
+              this.messageService.success("账号信息修改成功")
+              if (obj.email) this.authService.setData("email", value.email)
+              if (obj.user_name) this.authService.setData("user_name", value.user_name)
+              this.search();
+            }
+            else this.messageService.error(`${res.message}`)
+          })
+        }
       }
     });
   }
