@@ -11,22 +11,31 @@ import { ToastrService } from 'ngx-toastr';
 
 export class LoginComponent {
   form: FormGroup;
-  public role: string = '';
+  public type: string = '';
 
   constructor(private fb: FormBuilder,
     public dialogRef: MatDialogRef<LoginComponent>,
     public messageService: ToastrService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-    if (data && data.role) {
-      this.role = data.role;
-      this.form = this.fb.group({
-        email: ['', Validators.email],
-        password: ['', Validators.required],
-        role: ['', Validators.required],
-        user_name: ['', Validators.required]
-      });
-    } else {
-      this.role = '';
+    if (data && data.type) {
+      this.type = data.type;      
+      if (this.type == 'register') {
+        this.form = this.fb.group({
+          email: ['', Validators.email],
+          password: ['', Validators.required],          
+          user_name: ['', Validators.required]
+        });
+      }
+      else {
+        this.form = this.fb.group({
+          email: ['', Validators.email],
+          password: ['', Validators.required],
+          role: ['', Validators.required],
+          user_name: ['', Validators.required]
+        });
+      }
+    }
+    else {
       this.form = this.fb.group({
         email: ['', Validators.email],
         password: ['']

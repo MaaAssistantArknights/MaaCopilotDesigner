@@ -169,12 +169,27 @@ export class HomeComponent implements OnInit {
       }
     });
   }
+  register() {
+    const dialogRef = this.dialog.open(LoginComponent, {
+      data: { type: 'register' },
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.authService.registerUser(result.value).subscribe(res => {
+          if (res.status_code == 200) {
+            this.messageService.success("请求发送成功，请检查邮箱")
+          }
+          else this.messageService.error(`请求发送失败：${res.message}`)
+        })
+      }
+    });
+  }
   login() {
     const dialogRef = this.dialog.open(LoginComponent, {
       data: {},
     });
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {        
+      if (result) {
         let value = result.value
         if (result.type != 'forgetpass') {
           this.authService.login(value.email, value.password).then(res => {
@@ -187,19 +202,22 @@ export class HomeComponent implements OnInit {
           })
         }
         else {
-          this.authService.forgetPass(value.email).subscribe(res => {
-            if (res.data) {
-              this.messageService.success("请求发送成功，请检查邮箱")
-            }
-            else this.messageService.error(`请求发送失败：${res.message}`)
-          })
+          if (value.email == '') this.messageService.error(`邮件格式错误`)
+          else {
+            this.authService.forgetPass(value.email).subscribe(res => {
+              if (res.data) {
+                this.messageService.success("请求发送成功，请检查邮箱")
+              }
+              else this.messageService.error(`请求发送失败：${res.message}`)
+            })
+          }
         }
       }
     });
   }
   createUser() {
     const dialogRef = this.dialog.open(LoginComponent, {
-      data: { role: this.role },
+      data: { type: 'addUser' },
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

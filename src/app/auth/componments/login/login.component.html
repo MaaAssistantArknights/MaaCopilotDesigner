@@ -15,7 +15,7 @@
             </mat-form-field>
 
         </div>
-        <div *ngIf="role=='Admin'||role=='SuperAdmin'" class="row">
+        <div *ngIf="type=='createUser'" class="row">
             <mat-form-field appearance="outline">
                 <mat-label>权限</mat-label>
                 <mat-select name="role" formControlName="role" placeholder="请设置权限">
@@ -26,7 +26,7 @@
             </mat-form-field>
 
         </div>
-        <div *ngIf="role=='Admin'||role=='SuperAdmin'" class="row">
+        <div *ngIf="type!=''" class="row">
             <mat-form-field appearance="outline">
                 <mat-label>账号名</mat-label>
                 <input type="user_name" name="user_name" formControlName="user_name" matInput placeholder="请输入账号名字">
@@ -34,10 +34,11 @@
         </div>
         <div class="form-buttons row">
             <div class=" col-6">
-                <button class="btn btn-primary" (click)="submit()">{{(role==''?"登录":"新建用户")}}</button>
+                <button class="btn btn-primary"
+                    (click)="submit()">{{(type==''?"登录":(type=='addUser'?"新建用户":"注册"))}}</button>
             </div>
             <div class=" col-6">
-                <button *ngIf="role==''" class="btn btn-primary" (click)="submit(true)">忘记密码</button>
+                <button *ngIf="type==''" class="btn btn-primary" (click)="submit(true)">忘记密码</button>
             </div>
         </div>
     </form>

@@ -52,6 +52,9 @@ export class AuthService {
   createUser(object: any) {
     return this.http.post<ServerResponseModel>(environment.baseurl + '/user/create', object, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem("id_token") as string } })
   }
+  registerUser(object: any) {
+    return this.http.post<ServerResponseModel>(environment.baseurl + '/user/register', object)
+  }
   public isLoggedIn() {
     return moment().isBefore(this.getExpiration()) && localStorage.getItem("username");
   }
