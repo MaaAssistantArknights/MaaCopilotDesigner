@@ -99,7 +99,7 @@ export class HomeComponent implements OnInit {
   onGridReady(params: any) {
     this.gridService.api = params.api;
     this.gridService.columnApi = params.columnApi;
-    this.gridService.get(``).subscribe((data) => {
+    this.gridService.get(`?desc=true`).subscribe((data) => {
       this.rowData = data.data;
     });
     this.gridService.api.sizeColumnsToFit()
@@ -257,8 +257,10 @@ export class HomeComponent implements OnInit {
           let homeworkData = new CopilotModel();
           homeworkData.load(JSON.parse(res.data.content) as CopilotModel);
           const dialogRef = this.dialog.open(CopilotDetailComponent, {
-            width: '90%',
-            height: '85%',
+            maxWidth: '100vw',
+            maxHeight: '100vh',
+            height: '100%',
+            width: '100%',
             data: { homework: homeworkData, role: this.authService.getRole(), id: data.id },
           });
           dialogRef.afterClosed().subscribe(result => {
@@ -271,8 +273,10 @@ export class HomeComponent implements OnInit {
     }
     else {
       const dialogRef = this.dialog.open(CopilotDetailComponent, {
-        width: '90%',
-        height: '85%',
+        maxWidth: '100vw',
+        maxHeight: '100vh',
+        height: '100%',
+        width: '100%',
         data: { homework: new CopilotModel(), role: this.authService.getRole() },
       });
       dialogRef.afterClosed().subscribe(result => {
