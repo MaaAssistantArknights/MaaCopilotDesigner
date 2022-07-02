@@ -20,6 +20,9 @@ export class AuthService {
   forgetPass(email: string) {
     return this.http.post<ServerResponseModel>(environment.baseurl + '/user/password/reset_request', { email })
   }
+  active(token: string) {
+    return this.http.post<ServerResponseModel>(environment.baseurl + '/user/activate', { token })
+  }
 
   private setSession(authResult: any, email: string) {
     if (authResult.data) {

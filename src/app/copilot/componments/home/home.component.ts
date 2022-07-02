@@ -14,6 +14,7 @@ import { LoginComponent } from 'src/app/auth/componments/login/login.component';
 import { ChangePassComponent } from 'src/app/auth/componments/change-pass/change-pass.component';
 import { userRoleEnum } from 'src/app/shared/userRoleEnum';
 import { EmailValidator } from '@angular/forms';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
 declare var RateRenderer: any;
 declare var ActionRenderer: any;
@@ -51,7 +52,8 @@ export class HomeComponent implements OnInit {
     'actionrenderer': ActionRenderer
   };
 
-  constructor(public dialog: MatDialog, public service: CopilotService, private messageService: ToastrService, private authService: AuthService, public gridService: SearchGridService) {
+  constructor(public dialog: MatDialog, public service: CopilotService, private messageService: ToastrService, private authService: AuthService,
+    public gridService: SearchGridService, private route: ActivatedRoute, private router: Router) {
     this.homework = new CopilotModel();
     this.currentEdit = EditMode.Operator;
   }
@@ -61,6 +63,18 @@ export class HomeComponent implements OnInit {
     this.rowData = { data: [], page: 1, total: 0 };
     this.setUserInfo();
     this.initializedGrid();
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      if (params.get('activeToken')) {
+        this.authService.active(params.get('activeToken') + '').subscribe(res => {
+          if (res.status_code == 200) {
+            this.messageService.success("账号激活成功，请使用账密登录")
+          }
+          else this.messageService.error(`${res.message}`)
+          this.router.navigateByUrl('/')
+        })
+      }
+    })
+
   }
   AfterViewInit(): void {
     this.setUserInfo();
@@ -69,7 +83,6 @@ export class HomeComponent implements OnInit {
     this.isLogin = this.authService.isLoggedIn();
     this.role = this.authService.getRole();
     this.currentUser = this.authService.getUserName();
-    // this.hasEditPermission = (userRoleEnum[this.role as keyof typeof userRoleEnum]) >= 50 ||    
   }
   handelOperatorAction(event: any) {
     if (event == ActionType[1]) {

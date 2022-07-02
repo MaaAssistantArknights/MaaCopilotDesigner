@@ -8,9 +8,9 @@
     <div *ngIf="!isLogin" class="col-1">
       <button class="btn btn-primary" (click)="login()">用户登录</button>
     </div>
-    <!-- <div *ngIf="!isLogin" class="col-1">
+    <div *ngIf="!isLogin" class="col-1">
       <button class="btn btn-primary" (click)="register()">用户注册</button>
-    </div> -->
+    </div>
     <div *ngIf="isLogin&&(role=='Admin'||role=='SuperAdmin')" class="col-1">
       <button class="btn btn-primary" (click)="createUser()">新建用户</button>
     </div>
