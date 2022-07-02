@@ -13,7 +13,9 @@ export class CopilotService {
 
   constructor(private http: HttpClient) { }
   upload(data: any) {
-    return this.http.post<ServerResponseModel>(environment.baseurl + '/copilot/upload', { Content: data }, this.setHeader())
+    var url = '/copilot/upload';
+    if (data.id > 0) url = '/copilot/update'
+    return this.http.post<ServerResponseModel>(environment.baseurl + url, data, this.setHeader())
   }
   setHeader() {
     return { headers: { 'Authorization': 'Bearer ' + localStorage.getItem("id_token") as string } };
