@@ -14,6 +14,7 @@ import { LoginComponent } from 'src/app/auth/componments/login/login.component';
 import { ChangePassComponent } from 'src/app/auth/componments/change-pass/change-pass.component';
 import { userRoleEnum } from 'src/app/shared/userRoleEnum';
 import { EmailValidator } from '@angular/forms';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
 declare var RateRenderer: any;
 declare var ActionRenderer: any;
@@ -44,14 +45,15 @@ export class HomeComponent implements OnInit {
   gridApi: any;
   gridColumnApi: any;
   public rowData!: any;
-  public pageSize = 10;
+  public pageSize = 50;
   public pageIndex = 1;
   components = {
     'raterenderer': RateRenderer,
     'actionrenderer': ActionRenderer
   };
 
-  constructor(public dialog: MatDialog, public service: CopilotService, private messageService: ToastrService, private authService: AuthService, public gridService: SearchGridService) {
+  constructor(public dialog: MatDialog, public service: CopilotService, private messageService: ToastrService, private authService: AuthService,
+    public gridService: SearchGridService, private route: ActivatedRoute, private router: Router) {
     this.homework = new CopilotModel();
     this.currentEdit = EditMode.Operator;
   }
@@ -61,6 +63,18 @@ export class HomeComponent implements OnInit {
     this.rowData = { data: [], page: 1, total: 0 };
     this.setUserInfo();
     this.initializedGrid();
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      if (params.get('activeToken')) {
+        this.authService.active(params.get('activeToken') + '').subscribe(res => {
+          if (res.status_code == 200) {
+            this.messageService.success("账号激活成功，请使用账密登录")
+          }
+          else this.messageService.error(`${res.message}`)
+          this.router.navigateByUrl('/')
+        })
+      }
+    })
+
   }
   AfterViewInit(): void {
     this.setUserInfo();
@@ -69,7 +83,6 @@ export class HomeComponent implements OnInit {
     this.isLogin = this.authService.isLoggedIn();
     this.role = this.authService.getRole();
     this.currentUser = this.authService.getUserName();
-    // this.hasEditPermission = (userRoleEnum[this.role as keyof typeof userRoleEnum]) >= 50 ||    
   }
   handelOperatorAction(event: any) {
     if (event == ActionType[1]) {
@@ -99,7 +112,7 @@ export class HomeComponent implements OnInit {
   onGridReady(params: any) {
     this.gridService.api = params.api;
     this.gridService.columnApi = params.columnApi;
-    this.gridService.get(``).subscribe((data) => {
+    this.gridService.get(`?desc=true&limit=${this.pageSize}`).subscribe((data) => {
       this.rowData = data.data;
     });
     this.gridService.api.sizeColumnsToFit()
@@ -257,8 +270,10 @@ export class HomeComponent implements OnInit {
           let homeworkData = new CopilotModel();
           homeworkData.load(JSON.parse(res.data.content) as CopilotModel);
           const dialogRef = this.dialog.open(CopilotDetailComponent, {
-            width: '90%',
-            height: '85%',
+            maxWidth: '100vw',
+            maxHeight: '100vh',
+            height: '100%',
+            width: '100%',
             data: { homework: homeworkData, role: this.authService.getRole(), id: data.id },
           });
           dialogRef.afterClosed().subscribe(result => {
@@ -271,8 +286,10 @@ export class HomeComponent implements OnInit {
     }
     else {
       const dialogRef = this.dialog.open(CopilotDetailComponent, {
-        width: '90%',
-        height: '85%',
+        maxWidth: '100vw',
+        maxHeight: '100vh',
+        height: '100%',
+        width: '100%',
         data: { homework: new CopilotModel(), role: this.authService.getRole() },
       });
       dialogRef.afterClosed().subscribe(result => {
@@ -282,7 +299,7 @@ export class HomeComponent implements OnInit {
   }
   search(reset: boolean = false) {
     if (reset) this.pageIndex = 1;
-    var url = `?page=${this.pageIndex}&limit=${this.pageSize}`;
+    var url = `?page=${this.pageIndex}&limit=${this.pageSize}&desc=true`;
     if (this.searchDTO.stage_name && this.searchDTO.stage_name.trim() != '') url += `&stage_name=${this.searchDTO.stage_name}`
     this.gridService.get(url).subscribe((data) => {
       this.rowData = data.data;

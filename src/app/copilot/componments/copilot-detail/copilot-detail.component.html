@@ -1,9 +1,10 @@
+<button class="close" mat-button (click)="onNoClick()">X</button>
 <div mat-dialog-content>
   <br />
   <div class="row">
 
     <div class="col-2">
-      <button class="btn btn-primary" (click)="upload()">上传至服务器</button>      
+      <button class="btn btn-primary" (click)="upload()">{{(id>0?"更新":"新建")}} </button>
     </div>
     <div class="col-2">
       <button class="btn btn-danger" (click)="clear()">清除数据</button>
@@ -15,10 +16,10 @@
     <input type="file" id="selectedFile" #selectedFile (change)="onFileChange($event)" style="display: none;"
       name="files[]" size=1 />
     <div class="col-2">
-      <button class="btn btn-dark" (click)="selectedFile.click()">上载JSON</button>
+      <button class="btn btn-dark" (click)="selectedFile.click()">读取本地</button>
     </div>
     <div class="col-2">
-      <button class="btn btn-dark" (click)="download()">下载JSON</button>
+      <button class="btn btn-dark" (click)="download()">下载本地</button>
     </div>
 
   </div>

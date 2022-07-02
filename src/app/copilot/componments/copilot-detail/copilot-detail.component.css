@@ -5,3 +5,17 @@ mat-form-field {
 .mat-dialog-content {
     max-height: none;
 }
+
+.cdk-overlay-pane.my-dialog {
+    position: relative !important;
+}
+
+.close.mat-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px;
+    line-height: 50px;
+    font-size: large;    
+    min-width: 50px;
+}

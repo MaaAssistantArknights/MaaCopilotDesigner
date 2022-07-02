@@ -29,10 +29,10 @@ export class SearchGridService {
       headerName: '关卡名', maxWidth: 125, colId: 'stage_name', field: 'stage_name', editable: false, resizable: true, suppressSizeToFit: true
     },
     {
-      headerName: '浏览次数', maxWidth: 100, colId: 'views', field: 'views', editable: false, resizable: true
+      headerName: '浏览次数', maxWidth: 150, colId: 'views', field: 'views', editable: false, resizable: true
     },
     {
-      headerName: '点赞', maxWidth: 250, colId: 'rate', field: 'rate', editable: false, resizable: true, suppressSizeToFit: true, floatingFilterComponentParams: { suppressFilterButton: true }, cellRenderer: 'raterenderer'
+      headerName: '点赞', maxWidth: 100, colId: 'rate', field: 'rate', editable: false, resizable: true, suppressSizeToFit: true, floatingFilterComponentParams: { suppressFilterButton: true }, cellRenderer: 'raterenderer'
     }
       ,
     {
@@ -60,7 +60,7 @@ export class SearchGridService {
       headerName: '上传者', maxWidth: 100, colId: 'uploader', field: 'uploader', editable: false, resizable: true
     },
     {
-      headerName: '操作', maxWidth: 250, colId: 'action', field: 'action', editable: false, resizable: true, suppressSizeToFit: true, floatingFilterComponentParams: { suppressFilterButton: true }, cellRenderer: 'actionrenderer'
+      headerName: '操作', minWidth: 200, colId: 'action', field: 'action', editable: false, resizable: true, suppressSizeToFit: true, floatingFilterComponentParams: { suppressFilterButton: true }, cellRenderer: 'actionrenderer'
     }];
   }
 }

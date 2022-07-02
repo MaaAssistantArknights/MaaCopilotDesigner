@@ -112,7 +112,7 @@ export class CopilotDetailComponent {
   }
   copyID(): void {
     this.messageService.success("神秘代码已经复制到剪切板，请粘贴到MAA自动战斗界面载入");
-    navigator.clipboard.writeText("maa://"+this.id+"");
+    navigator.clipboard.writeText("maa://" + this.id + "");
   }
   onFileChange(evt: any) {
     let file = evt.target.files[0];
@@ -153,8 +153,8 @@ export class CopilotDetailComponent {
     this.homework.cleanUP();
     if (this.userRole && this.userRole != "User") {
       if (this.id && this.id > 0) {
-        this.service.upload(JSON.stringify(this.homework)).subscribe(res => {
-          if (res.data && res.status_code == 200) {
+        this.service.upload({ content: JSON.stringify(this.homework), id: this.id }).subscribe(res => {
+          if (res.status_code == 200) {
             this.messageService.success(`更新成功`, "", { timeOut: 10000 })
           }
           else {
@@ -163,9 +163,9 @@ export class CopilotDetailComponent {
         })
       }
       else {
-        this.service.upload(JSON.stringify(this.homework)).subscribe(res => {
+        this.service.upload({ content: JSON.stringify(this.homework) }).subscribe(res => {
           if (res.data && res.status_code == 200) {
-            this.messageService.success(`上传成功，请妥善保管神秘代码：${res.data.id}`, "", { timeOut: 10000 })
+            this.messageService.success(`上传成功，请妥善保管神秘代码：maa://${res.data.id}`, "", { timeOut: 10000 })
           }
           else {
             this.messageService.error(res.message, "", { timeOut: 5000 })
