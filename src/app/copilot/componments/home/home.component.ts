@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit {
   gridApi: any;
   gridColumnApi: any;
   public rowData!: any;
-  public pageSize = 10;
+  public pageSize = 50;
   public pageIndex = 1;
   components = {
     'raterenderer': RateRenderer,
@@ -99,7 +99,7 @@ export class HomeComponent implements OnInit {
   onGridReady(params: any) {
     this.gridService.api = params.api;
     this.gridService.columnApi = params.columnApi;
-    this.gridService.get(`?desc=true`).subscribe((data) => {
+    this.gridService.get(`?desc=true&limit=${this.pageSize}`).subscribe((data) => {
       this.rowData = data.data;
     });
     this.gridService.api.sizeColumnsToFit()
@@ -286,7 +286,7 @@ export class HomeComponent implements OnInit {
   }
   search(reset: boolean = false) {
     if (reset) this.pageIndex = 1;
-    var url = `?page=${this.pageIndex}&limit=${this.pageSize}`;
+    var url = `?page=${this.pageIndex}&limit=${this.pageSize}&desc=true`;
     if (this.searchDTO.stage_name && this.searchDTO.stage_name.trim() != '') url += `&stage_name=${this.searchDTO.stage_name}`
     this.gridService.get(url).subscribe((data) => {
       this.rowData = data.data;

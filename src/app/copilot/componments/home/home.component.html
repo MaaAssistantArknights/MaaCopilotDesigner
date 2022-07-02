@@ -44,11 +44,11 @@
   </div>
   <br />
   <div class="row">
-    <ag-grid-angular #searchGrid style="width:100%; height: 325px;" class="ag-theme-balham"
-      [columnDefs]="gridService.gridOptions.columnDefs" [defaultColDef]="gridService.gridOptions.defaultColDef"
+    <ag-grid-angular #searchGrid style="width:100%; height: 70vh;" class="ag-theme-alpine"
+      [columnDefs]="gridService.gridOptions.columnDefs" [defaultColDef]="gridService.gridOptions.defaultColDef" 
       [rowData]="rowData.data" [context]="gridService.gridOptions.context" [paginationPageSize]="pageSize"
       [components]="components" [animateRows]="true" (gridReady)="onGridReady($event)"
-      [gridOptions]="this.gridService.gridOptions">
+      [gridOptions]="this.gridService.gridOptions" [rowHeight]="50" [headerHeight]="50">
     </ag-grid-angular>
   </div>
   <div class="row">
