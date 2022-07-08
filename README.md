@@ -1,5 +1,7 @@
 # MaaCopilotDesigner
 
+# Archived, New Repo -> [MaaAssistantArknights/maa-copilot-frontend](https://github.com/MaaAssistantArknights/maa-copilot-frontend)
+
 ![platform](https://img.shields.io/badge/platform-Angular-blueviolet) ![license](https://img.shields.io/github/license/MaaAssistantArknights/MeoAsstElectronUI) ![commit](https://img.shields.io/github/commit-activity/m/MaaAssistantArknights/MaaCopilotDesigner?color=%23ff69b4)
 
 ## UI特点
